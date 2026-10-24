@@ -2,7 +2,7 @@
 class Material {
   final int? id;
   final String nome;
-  final int quantidade;
+  final double quantidade;
   final double valorMaterial;
   final DateTime dataCompra;
 
@@ -28,7 +28,7 @@ class Material {
     return Material(
       id: map['id'] as int?,
       nome: map['nome'] as String,
-      quantidade: map['quantidade'] as int,
+      quantidade: map['quantidade'] as double,
       valorMaterial: (map['valor_material'] as num).toDouble(),
       dataCompra: DateTime.parse(map['data_compra'] as String),
     );

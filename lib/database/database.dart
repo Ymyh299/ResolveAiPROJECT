@@ -1,4 +1,4 @@
-import 'package:mysql_client/mysql_client.dart';
+import 'package:mysql_client/mysql_client.dart' as mysql;
 
 class Database {
   //Configuração do env para a senha do banco de dados
@@ -12,8 +12,8 @@ class Database {
   static const String _dbName = "curso_db";
 
   /// Método centralizado para abrir conexões
-  static Future<MySQLConnection> abrirConexao() async {
-    var conn = await MySQLConnection.createConnection(
+  static Future<mysql.MySQLConnection> abrirConexao() async {
+    var conn = await mysql.MySQLConnection.createConnection(
       host: _host,
       port: _port,
       userName: _user,
