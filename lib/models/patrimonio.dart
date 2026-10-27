@@ -2,6 +2,15 @@
 /// ar-condicionado, um cortador de grama) que pode precisar de manutenção
 /// e, por isso, pode "receber" Ordens de Serviço.
 class Patrimonio {
+  /// Opções de estado de conservação, na ordem exibida no menu.
+  static const List<String> estados = [
+    'Novo',
+    'Bom',
+    'Regular',
+    'Ruim',
+    'Irrecuperável',
+  ];
+
   final int? id;
   final String nome;
   final int localizacaoId;
@@ -21,6 +30,29 @@ class Patrimonio {
     required this.estadoConservacao,
     required this.dataCompra,
   });
+
+  /// Cria uma cópia alterando apenas os campos informados.
+  Patrimonio copyWith({
+    int? id,
+    String? nome,
+    int? localizacaoId,
+    String? descricao,
+    String? numeroPatrimonio,
+    double? valor,
+    String? estadoConservacao,
+    DateTime? dataCompra,
+  }) {
+    return Patrimonio(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      localizacaoId: localizacaoId ?? this.localizacaoId,
+      descricao: descricao ?? this.descricao,
+      numeroPatrimonio: numeroPatrimonio ?? this.numeroPatrimonio,
+      valor: valor ?? this.valor,
+      estadoConservacao: estadoConservacao ?? this.estadoConservacao,
+      dataCompra: dataCompra ?? this.dataCompra,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {

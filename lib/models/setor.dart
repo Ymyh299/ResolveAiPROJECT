@@ -17,6 +17,24 @@ class Setor {
     this.duracao,
   });
 
+  /// Cria uma cópia alterando apenas os campos informados.
+  /// (Para limpar a descrição, passe uma String vazia e trate no DAO/menu.)
+  Setor copyWith({
+    int? id,
+    String? nome,
+    String? descricao,
+    int? prioridade,
+    String? duracao,
+  }) {
+    return Setor(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      descricao: descricao ?? this.descricao,
+      prioridade: prioridade ?? this.prioridade,
+      duracao: duracao ?? this.duracao,
+    );
+  }
+
   /// Converte a classe em um Map, formato usado para salvar no banco de dados
   /// ou transformar em JSON pra enviar pelo front end.
   Map<String, dynamic> toMap() {
