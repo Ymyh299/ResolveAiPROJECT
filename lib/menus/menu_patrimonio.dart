@@ -1,32 +1,19 @@
 import 'dart:io';
 
 import '../models/patrimonio.dart';
-// Ajuste os imports conforme a estrutura do seu projeto:
 import '../models/localizacao.dart';
-// import 'patrimonio_dao.dart';
-// import 'localizacao_dao.dart';
-// import 'ordem_servico_dao.dart';
-import '../menus/menulocalizacao.dart';
-import '../menus/menuordemservico.dart';
+import '../dao/patrimonio_dao.dart';
+import '../dao/localizacao_dao.dart';
+import '../dao/ordem_servico_dao.dart';
 
-/// Menus do módulo de Patrimônio (apenas interface de console).
-/// Toda persistência é delegada aos DAOs.
-///
-/// Dependências esperadas:
-///   PatrimonioDao:  gerarNumeroPatrimonio()->String, inserir(Patrimonio)->int,
-///                   buscarPorId(int)->Patrimonio?,
-///                   buscarPorNome(String)->List<Patrimonio>,
-///                   buscarPorLocalizacao(int, {bool incluirSubniveis})
-///                       ->List<Patrimonio>,
-///                   buscarPorEstado(String)->List<Patrimonio>,
-///                   atualizar(Patrimonio), excluir(int)
-///   LocalizacaoDao: buscarRaizes()->List<Localizacao>,
-///                   buscarFilhos(int paiId)->List<Localizacao>,
-///                   caminhoCompleto(int id)->String  (ex: "Área A / Sala de TI")
-///   OrdemServicoDao: existePorPatrimonio(int)->bool
-///   MenuLocalizacao.cadastrarLocalizacao() -> Future<int?> (id criado ou null)
-///   MenuOrdemServico.consultarPorPatrimonio(int patrimonioId)
 class MenuPatrimonio {
+
+  static Future<int?> Function() cadastrarLocalizacao = () async => null;
+  static Future<void> Function(int patrimonioId) consultarOrdensPorPatrimonio =
+      (_) async {};
+
+  static Future<void> mostrarPorLocalizacao(Localizacao loc) =>
+      _navegarPorLocalizacao(loc);
   // ===========================================================================
   // 3.1 MENU DE PATRIMÔNIO
   // ===========================================================================
@@ -79,7 +66,13 @@ class MenuPatrimonio {
       if (localizacaoId == null) return; // cancelou o cadastro
 
       final d = _DadosCadastro(
-          nome, descricao, valor, dataCompra, estado, localizacaoId);
+        nome,
+        descricao,
+        valor,
+        dataCompra,
+        estado,
+        localizacaoId,
+      );
 
       // Resumo + confirmação
       while (true) {
@@ -107,17 +100,18 @@ class MenuPatrimonio {
         }
       }
 
-      // Salva via DAO
+      // Salva via DAO.
       final dao = PatrimonioDao();
+
       final novo = Patrimonio(
         nome: d.nome,
         localizacaoId: d.localizacaoId,
         descricao: d.descricao.isEmpty ? null : d.descricao,
-        numeroPatrimonio: await dao.gerarNumeroPatrimonio(),
         valor: d.valor,
         estadoConservacao: d.estado,
         dataCompra: d.dataCompra,
       );
+
       final id = await dao.inserir(novo);
       final caminho = await LocalizacaoDao().caminhoCompleto(d.localizacaoId);
 
@@ -125,14 +119,17 @@ class MenuPatrimonio {
       print('Código do patrimônio: ${_codigo(id)}');
       print('Nome: ${novo.nome}');
       print('Localização: $caminho');
+
       print('\n=================================');
       print('[1] Visualizar patrimônio');
       print('[2] Cadastrar outro');
       print('[0] Voltar para Home');
+
       final op = _ler('');
 
       if (op == '2') continue;
       if (op == '1') await detalhesPatrimonio(id);
+
       return;
     }
   }
@@ -178,7 +175,7 @@ class MenuPatrimonio {
         case '2':
           // Abre o formulário do módulo de Localizações (seção 6).
           // Ao terminar, volta aqui com os demais campos preservados.
-          final id = await MenuLocalizacao.cadastrarLocalizacao();
+          final id = await cadastrarLocalizacao();
           if (id != null) return id;
         case '0':
           return null;
@@ -272,8 +269,10 @@ class MenuPatrimonio {
         case '3':
           final locId = await _selecionarLocalizacao();
           if (locId == null) continue;
-          resultado =
-              await dao.buscarPorLocalizacao(locId, incluirSubniveis: true);
+          resultado = await dao.buscarPorLocalizacao(
+            locId,
+            incluirSubniveis: true,
+          );
         case '4':
           resultado = await dao.buscarPorEstado(_escolherEstado());
         case '0':
@@ -348,7 +347,7 @@ class MenuPatrimonio {
         case '2':
           await _alterarLocalizacao(p);
         case '3':
-          await MenuOrdemServico.consultarPorPatrimonio(p.id!);
+          await consultarOrdensPorPatrimonio(p.id!);
         case '4':
           final excluido = await _excluirPatrimonio(p);
           if (excluido) return; // patrimônio não existe mais
@@ -509,7 +508,8 @@ class MenuPatrimonio {
         case '4':
           print('\nValor atual: ${_formatarData(atual.dataCompra)}');
           atualizado = atual.copyWith(
-              dataCompra: _lerData('Novo valor (DD/MM/AAAA):'));
+            dataCompra: _lerData('Novo valor (DD/MM/AAAA):'),
+          );
         case '5':
           print('\nValor atual: ${atual.estadoConservacao}');
           atualizado = atual.copyWith(estadoConservacao: _escolherEstado());
@@ -574,7 +574,7 @@ class MenuPatrimonio {
 
     if (!_confirmar('Deseja realmente excluir?')) return false;
 
-    if (await OrdemServicoDao().existePorPatrimonio(p.id!)) {
+    if (await OrdemDeServicoDao().existePorPatrimonio(p.id!)) {
       print('\nNão foi possível excluir o patrimônio.');
       print('Existem ordens de serviço relacionadas.\n');
       print('Considere manter o registro para preservar');
@@ -583,7 +583,7 @@ class MenuPatrimonio {
       return false;
     }
 
-    await PatrimonioDao().excluir(p.id!);
+    await PatrimonioDao().deletar(p.id!);
     print('\nPatrimônio excluído com sucesso!\n');
     _ler('[0] Voltar');
     return true;
@@ -641,11 +641,13 @@ class MenuPatrimonio {
 
   static String _codigo(int? id) => '#${id.toString().padLeft(3, '0')}';
 
-  static String _moeda(double v) => v.toStringAsFixed(2).replaceAll('.', ',');
+  static String _moeda(double? v) =>
+      v == null ? '-' : v.toStringAsFixed(2).replaceAll('.', ',');
 
-  static String _formatarData(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/${d.year}';
+  static String _formatarData(DateTime? d) => d == null
+      ? '-'
+      : '${d.day.toString().padLeft(2, '0')}/'
+            '${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   static String _texto(String? valor) =>
       (valor == null || valor.isEmpty) ? '-' : valor;
@@ -695,6 +697,12 @@ class _DadosCadastro {
   double valor;
   DateTime dataCompra;
   int localizacaoId;
-  _DadosCadastro(this.nome, this.descricao, this.valor, this.dataCompra,
-      this.estado, this.localizacaoId);
+  _DadosCadastro(
+    this.nome,
+    this.descricao,
+    this.valor,
+    this.dataCompra,
+    this.estado,
+    this.localizacaoId,
+  );
 }

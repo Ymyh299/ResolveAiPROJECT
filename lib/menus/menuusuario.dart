@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import '../models/usuario.dart';
-// Ajuste os imports conforme a estrutura do seu projeto:
-// import 'usuario_dao.dart';
-// import 'setor_dao.dart';
-// import 'ordem_servico_dao.dart';
+import '../dao/usuario_dao.dart';
+import '../dao/setor_dao.dart';
+import '../dao/ordem_servico_dao.dart';
 import '../models/sessao.dart';
+import '../models/setor.dart';
 
 /// Menus do módulo de Usuários (apenas interface de console).
 /// Toda persistência é delegada aos DAOs.
@@ -96,7 +96,7 @@ class MenuUsuario {
         telefone: dados.telefone,
         email: dados.email,
         senhaHash: dados.senhaHash,
-        setorId: dados.setor.id,
+        setorId: dados.setor.id!,
         tipoUsuario: dados.tipo,
       );
       final id = await UsuarioDao().inserir(novo);
@@ -176,7 +176,7 @@ class MenuUsuario {
           if (u != null) resultado = [u];
         case '4':
           final setor = _escolherSetor(await SetorDao().listar());
-          resultado = await dao.buscarPorSetor(setor.id);
+          resultado = await dao.buscarPorSetor(setor.id!);
         case '0':
           return;
         default:
@@ -338,7 +338,7 @@ class MenuUsuario {
 
     if (!_confirmar('Deseja Excluir este usuário?')) return;
 
-    if (await OrdemServicoDao().existePorUsuario(id)) {
+    if (await OrdemDeServicoDao().existePorUsuario(id)) {
       print('\nNão foi possível excluir o usuário.');
       print('Existem ordens de serviço relacionadas.\n');
       print('Considere manter o registro para preservar');
@@ -450,7 +450,7 @@ class MenuUsuario {
     stdout.write('> ');
     return (stdin.readLineSync() ?? '').trim();
   }
-0
+
   static void _cabecalho(String titulo) {
     const largura = 33;
     final pad = ((largura - titulo.length) / 2).floor().clamp(0, largura);

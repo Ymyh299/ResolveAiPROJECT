@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'localizacao.dart';
-import 'localizacao_dao.dart';
-import 'ordemservico.dart';
-import 'os_dao.dart';
-import 'statusordemdeservico.dart';
+import '../models/localizacao.dart';
+import '../dao/localizacao_dao.dart';
+import '../models/ordemdeservico.dart';
+import '../dao/ordem_servico_dao.dart';
+import '../dao/os_apoio_dao.dart';
 
 // ===========================================================
 // NAVEGAÇÃO DO ASSISTENTE (Nova OS): "0" cancela, "Voltar" volta
@@ -25,7 +25,7 @@ class _RascunhoOs {
   String titulo = '';
   String? observacao;
   String prioridade = 'Média';
-  String tipo = OrdemServico.corretiva;
+  String tipo = OrdemDeServico.corretiva;
   int? setorId;
   int? localizacaoId;
   int? patrimonioId;
@@ -39,8 +39,8 @@ class _RascunhoOs {
 
   _RascunhoOs(this.solicitanteId);
 
-  factory _RascunhoOs.de(OrdemServico os) {
-    return _RascunhoOs(os.usuarioSolicitanteId)
+  factory _RascunhoOs.de(OrdemDeServico os) {
+    return _RascunhoOs(os.solicitanteId)
       ..titulo = os.titulo
       ..observacao = os.observacao
       ..prioridade = os.prioridade
@@ -48,14 +48,14 @@ class _RascunhoOs {
       ..setorId = os.setorId
       ..localizacaoId = os.localizacaoId
       ..patrimonioId = os.patrimonioId
-      ..executorId = os.usuarioExecutorId
+      ..executorId = os.executorId
       ..prazo = os.prazoPrevisto
       ..intervaloDias = os.intervaloDias
       ..duracaoDias = os.duracaoDias
       ..proximaData = os.proximaData;
   }
 
-  bool get preventiva => tipo == OrdemServico.preventiva;
+  bool get preventiva => tipo == OrdemDeServico.preventiva;
 
   void limparRecorrencia() {
     intervaloDias = null;
@@ -64,8 +64,8 @@ class _RascunhoOs {
   }
 
   /// [base] = OS existente (preserva id, datas e status). Sem base = OS nova.
-  OrdemServico construir({OrdemServico? base}) {
-    return OrdemServico(
+  OrdemDeServico construir({OrdemDeServico? base}) {
+    return OrdemDeServico(
       id: base?.id,
       titulo: titulo,
       observacao: observacao,
@@ -74,14 +74,14 @@ class _RascunhoOs {
       dataFim: base?.dataFim,
       prazoPrevisto: prazo,
       prioridade: prioridade,
-      status: base?.status ?? StatusOrdemServico.aberta,
+      status: base?.status ?? OrdemDeServico.statusAberta,
       tipoManutencao: tipo,
       recorrente: preventiva,
       intervaloDias: preventiva ? intervaloDias : null,
       duracaoDias: preventiva ? duracaoDias : null,
       proximaData: preventiva ? proximaData : null,
-      usuarioSolicitanteId: solicitanteId,
-      usuarioExecutorId: executorId,
+      solicitanteId: solicitanteId,
+      executorId: executorId,
       setorId: setorId!,
       localizacaoId: localizacaoId!,
       patrimonioId: patrimonioId,
@@ -93,8 +93,8 @@ class _RascunhoOs {
 // MENU
 // ===========================================================
 
-class OrdemServicoMenu {
-  final OrdemServicoDao dao;
+class OrdemDeServicoMenu {
+  final OrdemDeServicoDao dao;
   final OsApoioDao apoio;
   final LocalizacaoDao localizacaoDao;
 
@@ -104,12 +104,12 @@ class OrdemServicoMenu {
   final bool isAdmin;
 
   /// "Registrar materiais utilizados" (tela de detalhes) -> menu de Materiais.
-  final Future<void> Function(OrdemServico os) registrarMateriais;
+  final Future<void> Function(OrdemDeServico os) registrarMateriais;
 
   /// "Consultar patrimônio" (tela de detalhes) -> menu de Patrimônio.
   final Future<void> Function(int patrimonioId) abrirPatrimonio;
 
-  OrdemServicoMenu(
+  OrdemDeServicoMenu(
     this.dao,
     this.apoio,
     this.localizacaoDao, {
@@ -123,13 +123,13 @@ class OrdemServicoMenu {
   static const int _tamanhoPagina = 10;
 
   // ----- Regras de permissão (centralizadas: ajuste aqui) -----
-  bool _podeEditar(OrdemServico os) =>
-      isAdmin || os.usuarioSolicitanteId == usuarioId;
+  bool _podeEditar(OrdemDeServico os) =>
+      isAdmin || os.solicitanteId == usuarioId;
 
-  bool _podeAlterarStatus(OrdemServico os) =>
+  bool _podeAlterarStatus(OrdemDeServico os) =>
       isAdmin ||
-      os.usuarioExecutorId == usuarioId ||
-      os.usuarioExecutorId == null;
+      os.executorId == usuarioId ||
+      os.executorId == null;
 
   bool get _podeAlterarExecutor => isAdmin;
 
@@ -203,8 +203,10 @@ class OrdemServicoMenu {
     bool permitirPassado = true,
   }) {
     while (true) {
-      final raw = _lerRaw(opcional ? '$prompt (Enter para pular)' : prompt,
-          wizard: wizard);
+      final raw = _lerRaw(
+        opcional ? '$prompt (Enter para pular)' : prompt,
+        wizard: wizard,
+      );
       if (raw.isEmpty && opcional) return null;
 
       final p = raw.split('/');
@@ -253,7 +255,8 @@ class OrdemServicoMenu {
       ? '—'
       : '${_data(d)} ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
-  String _cortar(String s, int n) => s.length <= n ? s : '${s.substring(0, n - 1)}…';
+  String _cortar(String s, int n) =>
+      s.length <= n ? s : '${s.substring(0, n - 1)}…';
 
   Future<String> _nomeUsuario(int? id, [String vazio = 'Não definido']) async {
     if (id == null) return vazio;
@@ -266,14 +269,13 @@ class OrdemServicoMenu {
   Future<String> _nomeLocalizacao(int? id) async =>
       id == null ? '—' : (await localizacaoDao.buscarPorId(id))?.nome ?? '—';
 
-  Future<String> _nomePatrimonio(int? id) async => id == null
-      ? 'Não especificado'
-      : await apoio.nomePatrimonio(id) ?? '—';
+  Future<String> _nomePatrimonio(int? id) async =>
+      id == null ? 'Não especificado' : await apoio.nomePatrimonio(id) ?? '—';
 
-  String _statusTexto(OrdemServico os) =>
-      os.status.toValue() + (os.estaAtrasada ? ' (ATRASADA)' : '');
+  String _statusTexto(OrdemDeServico os) =>
+      os.status + (os.atrasada ? ' (ATRASADA)' : '');
 
-  OrdemServico? _construirValidando(_RascunhoOs d, {OrdemServico? base}) {
+  OrdemDeServico? _construirValidando(_RascunhoOs d, {OrdemDeServico? base}) {
     try {
       final os = d.construir(base: base);
       os.validar();
@@ -336,7 +338,7 @@ class OrdemServicoMenu {
   }
 
   /// Retorna a OS salva, ou null se o usuário cancelou.
-  Future<OrdemServico?> _assistente() async {
+  Future<OrdemDeServico?> _assistente() async {
     final d = _RascunhoOs(usuarioId);
     var etapa = 1;
 
@@ -376,9 +378,11 @@ class OrdemServicoMenu {
   void _cabecalhoEtapa(int n, String nome, {bool podeVoltar = true}) {
     _cabecalho('Nova Ordem de Serviço');
     print('Etapa $n de 3 -- $nome');
-    print(podeVoltar
-        ? 'Digite [0] para cancelar e "Voltar" para voltar\n'
-        : 'Digite [0] para cancelar\n');
+    print(
+      podeVoltar
+          ? 'Digite [0] para cancelar e "Voltar" para voltar\n'
+          : 'Digite [0] para cancelar\n',
+    );
   }
 
   // ----- Etapa 1: Dados do serviço -----
@@ -389,12 +393,12 @@ class OrdemServicoMenu {
     d.observacao = _lerTextoOpcional('Descrição do problema:', wizard: true);
 
     print('\nPrioridade:');
-    final p = _escolherOpcao(OrdemServico.prioridadesValidas, wizard: true)!;
-    d.prioridade = OrdemServico.prioridadesValidas[p];
+    final p = _escolherOpcao(OrdemDeServico.prioridadesValidas, wizard: true)!;
+    d.prioridade = OrdemDeServico.prioridadesValidas[p];
 
     print('\nTipo de manutenção:');
-    final t = _escolherOpcao(OrdemServico.tiposValidos, wizard: true)!;
-    final novoTipo = OrdemServico.tiposValidos[t];
+    final t = _escolherOpcao(OrdemDeServico.tiposValidos, wizard: true)!;
+    final novoTipo = OrdemDeServico.tiposValidos[t];
     if (novoTipo != d.tipo) d.limparRecorrencia();
     d.tipo = novoTipo;
 
@@ -424,8 +428,12 @@ class OrdemServicoMenu {
 
     // Prazo é definido apenas pelo Administrador (regra do objeto).
     if (isAdmin) {
-      d.prazo = _lerData('Prazo previsto (DD/MM/AAAA):',
-          opcional: true, wizard: true, permitirPassado: false);
+      d.prazo = _lerData(
+        'Prazo previsto (DD/MM/AAAA):',
+        opcional: true,
+        wizard: true,
+        permitirPassado: false,
+      );
     }
 
     // Preventiva é sempre recorrente (exigência do validar()).
@@ -448,19 +456,29 @@ class OrdemServicoMenu {
       return false;
     }
     print('\nSetor responsável:');
-    final i = _escolherOpcao(setores.map((s) => s.nome).toList(), wizard: wizard);
+    final i = _escolherOpcao(
+      setores.map((s) => s.nome).toList(),
+      wizard: wizard,
+    );
     if (i == null) return false;
     d.setorId = setores[i].id;
     return true;
   }
 
   Future<void> _campoRecorrencia(_RascunhoOs d, {bool wizard = false}) async {
-    d.intervaloDias =
-        _lerInteiroPositivo('Intervalo entre manutenções (dias):', wizard: wizard);
-    d.duracaoDias =
-        _lerInteiroPositivo('Duração de cada manutenção (dias):', wizard: wizard);
-    d.proximaData = _lerData('Próxima manutenção (DD/MM/AAAA):',
-        wizard: wizard, permitirPassado: false);
+    d.intervaloDias = _lerInteiroPositivo(
+      'Intervalo entre manutenções (dias):',
+      wizard: wizard,
+    );
+    d.duracaoDias = _lerInteiroPositivo(
+      'Duração de cada manutenção (dias):',
+      wizard: wizard,
+    );
+    d.proximaData = _lerData(
+      'Próxima manutenção (DD/MM/AAAA):',
+      wizard: wizard,
+      permitirPassado: false,
+    );
   }
 
   // ----- Localização (hierarquia) + Patrimônio -----
@@ -483,8 +501,8 @@ class OrdemServicoMenu {
     }
   }
 
-  /// Desce pela hierarquia. Folhas são escolhidas direto; em um nível
-  /// intermediário há a opção "Usar <esta localização>".
+  //  Desce pela hierarquia. Folhas são escolhidas direto; em um nível
+  // intermediário há a opção "Usar <esta localização>".
   Future<Localizacao?> _navegarLocalizacao() async {
     final pilha = <Localizacao>[];
     while (true) {
@@ -522,7 +540,8 @@ class OrdemServicoMenu {
   }
 
   Future<({bool escolheu, int? patrimonioId})> _escolherPatrimonio(
-      Localizacao loc) async {
+    Localizacao loc,
+  ) async {
     final pats = await apoio.listarPatrimoniosPorLocalizacao(loc.id!);
 
     if (pats.isEmpty) {
@@ -632,12 +651,14 @@ class OrdemServicoMenu {
           final nome = _ler('Digite o nome do executor:');
           if (nome.isEmpty) break;
           final e = await _escolherExecutor(
-              await apoio.buscarExecutoresPorNome(nome));
+            await apoio.buscarExecutoresPorNome(nome),
+          );
           if (e != null) return e;
           break;
         case '2':
           final e = await _escolherExecutor(
-              await apoio.listarExecutoresDisponiveis());
+            await apoio.listarExecutoresDisponiveis(),
+          );
           if (e != null) return e;
           break;
         case '0':
@@ -655,7 +676,8 @@ class OrdemServicoMenu {
     }
     print('\nResultados encontrados:\n');
     final i = _escolherOpcao(
-        lista.map((e) => '${e.nome} (${e.setorNome})').toList());
+      lista.map((e) => '${e.nome} (${e.setorNome})').toList(),
+    );
     return i == null ? null : lista[i];
   }
 
@@ -674,10 +696,14 @@ class OrdemServicoMenu {
     print('Tipo de manutenção: ${d.tipo}');
     print('Localização: ${await _nomeLocalizacao(d.localizacaoId)}');
     print('Patrimônio: ${await _nomePatrimonio(d.patrimonioId)}');
-    print('Prazo previsto: ${d.prazo == null ? "Não definido" : _data(d.prazo)}');
+    print(
+      'Prazo previsto: ${d.prazo == null ? "Não definido" : _data(d.prazo)}',
+    );
     if (d.preventiva) {
-      print('Recorrente: Sim (a cada ${d.intervaloDias} dias, '
-          'duração ${d.duracaoDias} dias, próxima ${_data(d.proximaData)})');
+      print(
+        'Recorrente: Sim (a cada ${d.intervaloDias} dias, '
+        'duração ${d.duracaoDias} dias, próxima ${_data(d.proximaData)})',
+      );
     } else {
       print('Recorrente: Não');
     }
@@ -685,7 +711,7 @@ class OrdemServicoMenu {
   }
 
   /// [1] Editar OS / [2] Confirmar e abrir / [0] Cancelar.
-  Future<OrdemServico?> _resumo(_RascunhoOs d) async {
+  Future<OrdemDeServico?> _resumo(_RascunhoOs d) async {
     while (true) {
       await _imprimirResumo(d);
       print('[1] Editar OS\n[2] Confirmar e abrir\n[0] Cancelar');
@@ -722,10 +748,14 @@ class OrdemServicoMenu {
       print('7. Setor: ${await _nomeSetor(d.setorId)}');
       print('8. Localização: ${await _nomeLocalizacao(d.localizacaoId)}');
       print('9. Patrimônio: ${await _nomePatrimonio(d.patrimonioId)}');
-      print('10. Prazo previsto: ${d.prazo == null ? "Não definido" : _data(d.prazo)}');
+      print(
+        '10. Prazo previsto: ${d.prazo == null ? "Não definido" : _data(d.prazo)}',
+      );
       if (d.preventiva) {
-        print('11. Recorrência: a cada ${d.intervaloDias} dias, '
-            'duração ${d.duracaoDias}, próxima ${_data(d.proximaData)}');
+        print(
+          '11. Recorrência: a cada ${d.intervaloDias} dias, '
+          'duração ${d.duracaoDias}, próxima ${_data(d.proximaData)}',
+        );
       }
       print('\n0. Voltar\n');
 
@@ -747,22 +777,24 @@ class OrdemServicoMenu {
           break;
         case '3':
           print('Valor atual: ${d.prioridade}');
-          final i = _escolherOpcao(OrdemServico.prioridadesValidas);
+          final i = _escolherOpcao(OrdemDeServico.prioridadesValidas);
           if (i != null) {
-            d.prioridade = OrdemServico.prioridadesValidas[i];
+            d.prioridade = OrdemDeServico.prioridadesValidas[i];
             editou = true;
           }
           break;
         case '4':
           if (!novo) {
-            print('O tipo de manutenção não pode ser alterado '
-                'depois que a OS foi aberta.');
+            print(
+              'O tipo de manutenção não pode ser alterado '
+              'depois que a OS foi aberta.',
+            );
             break;
           }
           print('Valor atual: ${d.tipo}');
-          final i = _escolherOpcao(OrdemServico.tiposValidos);
+          final i = _escolherOpcao(OrdemDeServico.tiposValidos);
           if (i == null) break;
-          d.tipo = OrdemServico.tiposValidos[i];
+          d.tipo = OrdemDeServico.tiposValidos[i];
           if (d.preventiva) {
             if (d.intervaloDias == null) await _campoRecorrencia(d);
           } else {
@@ -794,9 +826,14 @@ class OrdemServicoMenu {
             print('Apenas administradores definem o prazo previsto.');
             break;
           }
-          print('Valor atual: ${d.prazo == null ? "Não definido" : _data(d.prazo)}');
-          d.prazo = _lerData('Insira o novo valor (DD/MM/AAAA):',
-              opcional: true, permitirPassado: false);
+          print(
+            'Valor atual: ${d.prazo == null ? "Não definido" : _data(d.prazo)}',
+          );
+          d.prazo = _lerData(
+            'Insira o novo valor (DD/MM/AAAA):',
+            opcional: true,
+            permitirPassado: false,
+          );
           editou = true;
           break;
         case '11':
@@ -820,13 +857,13 @@ class OrdemServicoMenu {
   }
 
   /// Tela "OS Cadastrada com Sucesso!". Retorna true para cadastrar outra.
-  Future<bool> _sucessoCadastro(OrdemServico os) async {
+  Future<bool> _sucessoCadastro(OrdemDeServico os) async {
     while (true) {
       _cabecalho('OS Cadastrada com Sucesso!');
       print('Número da OS: #${os.id}');
-      print('Status: ${os.status.toValue()}');
-      print('Solicitante: ${await _nomeUsuario(os.usuarioSolicitanteId)}');
-      print('Executor: ${await _nomeUsuario(os.usuarioExecutorId)}\n');
+      print('Status: ${os.status}');
+      print('Solicitante: ${await _nomeUsuario(os.solicitanteId)}');
+      print('Executor: ${await _nomeUsuario(os.executorId)}\n');
       print('=================================');
       print('[1] Visualizar OS\n[2] Cadastrar outra OS\n[0] Voltar para Home');
 
@@ -866,16 +903,25 @@ class OrdemServicoMenu {
           await buscarPorNumero();
           break;
         case '2':
-          await _buscarTexto('Digite o título:', dao.buscarPorTitulo,
-              'Resultados por Título');
+          await _buscarTexto(
+            'Digite o título:',
+            dao.buscarPorTitulo,
+            'Resultados por Título',
+          );
           break;
         case '3':
-          await _buscarTexto('Digite o nome do solicitante:',
-              dao.buscarPorSolicitanteNome, 'Resultados por Solicitante');
+          await _buscarTexto(
+            'Digite o nome do solicitante:',
+            dao.buscarPorSolicitanteNome,
+            'Resultados por Solicitante',
+          );
           break;
         case '4':
-          await _buscarTexto('Digite o nome do executor:',
-              dao.buscarPorExecutorNome, 'Resultados por Executor');
+          await _buscarTexto(
+            'Digite o nome do executor:',
+            dao.buscarPorExecutorNome,
+            'Resultados por Executor',
+          );
           break;
         case '5':
           await _filtrarPorStatus();
@@ -918,8 +964,8 @@ class OrdemServicoMenu {
       print('\nOS #${os.id}');
       print('Título: ${os.titulo}');
       print('Status: ${_statusTexto(os)}');
-      print('Solicitante: ${await _nomeUsuario(os.usuarioSolicitanteId)}');
-      print('Executor: ${await _nomeUsuario(os.usuarioExecutorId)}\n');
+      print('Solicitante: ${await _nomeUsuario(os.solicitanteId)}');
+      print('Executor: ${await _nomeUsuario(os.executorId)}\n');
       print('[1] Visualizar detalhes\n[2] Buscar outra OS\n[0] Voltar');
 
       while (true) {
@@ -937,7 +983,7 @@ class OrdemServicoMenu {
 
   Future<void> _buscarTexto(
     String prompt,
-    Future<List<OrdemServico>> Function(String) busca,
+    Future<List<OrdemDeServico>> Function(String) busca,
     String titulo,
   ) async {
     final texto = _ler('$prompt (0 para voltar)');
@@ -947,18 +993,20 @@ class OrdemServicoMenu {
 
   Future<void> _filtrarPorStatus() async {
     print('\nSelecione o status:');
-    final status = StatusOrdemServico.values;
-    final i = _escolherOpcao(status.map((s) => s.toValue()).toList());
+    final status = OrdemDeServico.statusValidos;
+    final i = _escolherOpcao(status);
     if (i == null) return;
     await _exibirLista(
-        'OS — ${status[i].toValue()}', await dao.listarPorStatus(status[i]));
+      'OS — ${status[i]}',
+      await dao.listarPorStatus(status[i]),
+    );
   }
 
   Future<void> _filtrarPorPrioridade() async {
     print('\nSelecione a prioridade:');
-    final i = _escolherOpcao(OrdemServico.prioridadesValidas);
+    final i = _escolherOpcao(OrdemDeServico.prioridadesValidas);
     if (i == null) return;
-    final p = OrdemServico.prioridadesValidas[i];
+    final p = OrdemDeServico.prioridadesValidas[i];
     await _exibirLista('OS — Prioridade $p', await dao.listarPorPrioridade(p));
   }
 
@@ -982,7 +1030,9 @@ class OrdemServicoMenu {
     final i = _escolherOpcao(setores.map((s) => s.nome).toList());
     if (i == null) return;
     await _exibirLista(
-        'OS — ${setores[i].nome}', await dao.listarPorSetor(setores[i].id));
+      'OS — ${setores[i].nome}',
+      await dao.listarPorSetor(setores[i].id!),
+    );
   }
 
   // ===========================================================
@@ -990,12 +1040,12 @@ class OrdemServicoMenu {
   // ===========================================================
 
   Future<void> menuListar() async {
-    final status = StatusOrdemServico.values;
+    final status = OrdemDeServico.statusValidos;
     while (true) {
       _cabecalho('Listar Ordens de Serviço');
       print('1. Todas as OS');
       for (var i = 0; i < status.length; i++) {
-        print('${i + 2}. OS ${status[i].toValue()}');
+        print('${i + 2}. OS ${status[i]}');
       }
       final porPrioridade = status.length + 2;
       print('$porPrioridade. OS por prioridade');
@@ -1007,7 +1057,7 @@ class OrdemServicoMenu {
         await _exibirLista('Ordens de Serviço', await dao.listarTodas());
       } else if (op != null && op >= 2 && op < porPrioridade) {
         final s = status[op - 2];
-        await _exibirLista('OS — ${s.toValue()}', await dao.listarPorStatus(s));
+        await _exibirLista('OS — $s', await dao.listarPorStatus(s));
       } else if (op == porPrioridade) {
         await _filtrarPorPrioridade();
       } else {
@@ -1017,8 +1067,11 @@ class OrdemServicoMenu {
   }
 
   /// Tabela paginada: ID / Título / Status. Escolher abre os detalhes.
-  Future<void> _exibirLista(String titulo, List<OrdemServico> itens,
-      {String rotuloVisualizar = 'Consultar uma OS'}) async {
+  Future<void> _exibirLista(
+    String titulo,
+    List<OrdemDeServico> itens, {
+    String rotuloVisualizar = 'Consultar uma OS',
+  }) async {
     if (itens.isEmpty) {
       print('\nNenhuma OS encontrada.');
       return;
@@ -1034,8 +1087,10 @@ class OrdemServicoMenu {
       print('ID    Título                 Status');
       print('-----------------------------------------');
       for (final os in itens.sublist(inicio, fim)) {
-        print('${os.id.toString().padRight(6)}'
-            '${_cortar(os.titulo, 22).padRight(23)}${_statusTexto(os)}');
+        print(
+          '${os.id.toString().padRight(6)}'
+          '${_cortar(os.titulo, 22).padRight(23)}${_statusTexto(os)}',
+        );
       }
       print('-----------------------------------------');
       print('Página ${pagina + 1} de $totalPaginas');
@@ -1088,7 +1143,7 @@ class OrdemServicoMenu {
       print('3. Todas as minhas OS');
       print('0. Voltar\n');
 
-      List<OrdemServico>? lista;
+      List<OrdemDeServico>? lista;
       switch (_ler('Selecione uma opção:')) {
         case '1':
           lista = await dao.listarPorSolicitante(usuarioId);
@@ -1097,7 +1152,7 @@ class OrdemServicoMenu {
           lista = await dao.listarPorExecutor(usuarioId);
           break;
         case '3':
-          final mapa = <int?, OrdemServico>{};
+          final mapa = <int?, OrdemDeServico>{};
           for (final os in [
             ...await dao.listarPorSolicitante(usuarioId),
             ...await dao.listarPorExecutor(usuarioId),
@@ -1113,8 +1168,11 @@ class OrdemServicoMenu {
       }
 
       if (lista != null) {
-        await _exibirLista('Minhas Ordens de Serviço', lista,
-            rotuloVisualizar: 'Visualizar OS');
+        await _exibirLista(
+          'Minhas Ordens de Serviço',
+          lista,
+          rotuloVisualizar: 'Visualizar OS',
+        );
       }
     }
   }
@@ -1123,7 +1181,7 @@ class OrdemServicoMenu {
   // DETALHES DA OS
   // ===========================================================
 
-  Future<void> detalhes(OrdemServico osInicial) async {
+  Future<void> detalhes(OrdemDeServico osInicial) async {
     while (true) {
       final os = await dao.buscarPorId(osInicial.id!); // recarrega
       if (os == null) return;
@@ -1134,23 +1192,35 @@ class OrdemServicoMenu {
       print('Título: ${os.titulo}');
       print('Descrição: ${os.observacao ?? "—"}');
       print('Data de abertura: ${_dataHora(os.dataAbertura)}');
-      print('Prazo previsto: ${os.prazoPrevisto == null ? "Não definido" : _data(os.prazoPrevisto)}');
-      print('Data de início: ${os.dataInicio == null ? "Não iniciado" : _dataHora(os.dataInicio)}');
-      print('Data de conclusão: ${os.dataFim == null ? "Não concluída" : _dataHora(os.dataFim)}\n');
-      print('Solicitante: ${await _nomeUsuario(os.usuarioSolicitanteId)}');
-      print('Executor: ${await _nomeUsuario(os.usuarioExecutorId)}');
+      print(
+        'Prazo previsto: ${os.prazoPrevisto == null ? "Não definido" : _data(os.prazoPrevisto)}',
+      );
+      print(
+        'Data de início: ${os.dataInicio == null ? "Não iniciado" : _dataHora(os.dataInicio)}',
+      );
+      print(
+        'Data de conclusão: ${os.dataFim == null ? "Não concluída" : _dataHora(os.dataFim)}\n',
+      );
+      print('Solicitante: ${await _nomeUsuario(os.solicitanteId)}');
+      print('Executor: ${await _nomeUsuario(os.executorId)}');
       print('Setor: ${await _nomeSetor(os.setorId)}');
       print('Localização: ${await _nomeLocalizacao(os.localizacaoId)}');
       print('Patrimônio: ${await _nomePatrimonio(os.patrimonioId)}\n');
       print('Prioridade: ${os.prioridade}');
       print('Tipo de manutenção: ${os.tipoManutencao}');
       if (os.recorrente) {
-        print('Recorrência: a cada ${os.intervaloDias} dias, '
-            'próxima em ${_data(os.proximaData)}');
+        print(
+          'Recorrência: a cada ${os.intervaloDias} dias, '
+          'próxima em ${_data(os.proximaData)}',
+        );
       }
       print('Status: ${_statusTexto(os)}\n');
       print('Materiais utilizados:');
-      print(materiais.isEmpty ? '  Nenhum' : materiais.map((m) => '  $m').join('\n'));
+      print(
+        materiais.isEmpty
+            ? '  Nenhum'
+            : materiais.map((m) => '  $m').join('\n'),
+      );
       print('\n=================================');
       print('[1] Editar OS');
       print('[2] Alterar status');
@@ -1191,7 +1261,7 @@ class OrdemServicoMenu {
   // EDITAR OS EXISTENTE
   // ===========================================================
 
-  Future<void> editar(OrdemServico os) async {
+  Future<void> editar(OrdemDeServico os) async {
     if (!_podeEditar(os)) {
       print('Você não tem permissão para editar esta OS.');
       return;
@@ -1211,7 +1281,7 @@ class OrdemServicoMenu {
   // ALTERAR STATUS
   // ===========================================================
 
-  Future<void> alterarStatus(OrdemServico os) async {
+  Future<void> alterarStatus(OrdemDeServico os) async {
     if (!_podeAlterarStatus(os)) {
       print('Apenas o executor ou um administrador pode alterar o status.');
       return;
@@ -1219,11 +1289,11 @@ class OrdemServicoMenu {
 
     _cabecalho('Alterar Status da OS');
     print('OS: #${os.id}');
-    print('Status atual: ${os.status.toValue()}\n');
+    print('Status atual: ${os.status}\n');
     print('Selecione o novo status:\n');
 
-    final todos = StatusOrdemServico.values;
-    final i = _escolherOpcao(todos.map((s) => s.toValue()).toList());
+    final todos = OrdemDeServico.statusValidos;
+    final i = _escolherOpcao(todos);
     if (i == null) return;
     final novo = todos[i];
 
@@ -1231,28 +1301,28 @@ class OrdemServicoMenu {
       print('A OS já está com esse status.');
       return;
     }
-    if (os.tipoManutencao == OrdemServico.preventiva &&
-        novo == StatusOrdemServico.concluida) {
+    if (os.tipoManutencao == OrdemDeServico.preventiva &&
+        novo == OrdemDeServico.statusConcluida) {
       print('Preventiva não é concluída: ela se renova.');
       return;
     }
-    if (!_confirmar(
-        'Deseja realmente alterar o status para "${novo.toValue()}"?')) {
-      return;
-    }
+    if (!_confirmar('Deseja realmente alterar o status para "$novo"?')) return;
 
-    final iniciou = novo != StatusOrdemServico.aberta &&
-        novo != StatusOrdemServico.cancelada;
+    final iniciou =
+        novo != OrdemDeServico.statusAberta &&
+        novo != OrdemDeServico.statusCancelada;
+    final concluiu = novo == OrdemDeServico.statusConcluida;
     final agora = DateTime.now();
 
-    // Obs.: copyWith não limpa campos; ao reabrir, dataFim anterior é mantida.
     final atualizada = os.copyWith(
       status: novo,
       dataInicio: (iniciou && os.dataInicio == null) ? agora : null,
-      dataFim: novo == StatusOrdemServico.concluida ? agora : null,
-      // Executor assume a OS ao iniciá-la (se ninguém assumiu ainda).
-      usuarioExecutorId:
-          (iniciou && os.usuarioExecutorId == null && !isAdmin) ? usuarioId : null,
+      dataFim: concluiu ? agora : null,
+      limparDataFim:
+          !concluiu, // ao reabrir ou cancelar, apaga a conclusão anterior
+      executorId: (iniciou && os.executorId == null && !isAdmin)
+          ? usuarioId
+          : null,
     );
 
     try {
@@ -1262,14 +1332,14 @@ class OrdemServicoMenu {
       return;
     }
     await dao.atualizar(atualizada);
-    print('Status atualizado para "${novo.toValue()}"!');
+    print('Status atualizado para "$novo"!');
   }
 
   // ===========================================================
   // ALTERAR EXECUTOR
   // ===========================================================
 
-  Future<void> alterarExecutor(OrdemServico os) async {
+  Future<void> alterarExecutor(OrdemDeServico os) async {
     if (!_podeAlterarExecutor) {
       print('Apenas administradores podem alterar o executor.');
       return;
@@ -1278,7 +1348,7 @@ class OrdemServicoMenu {
     if (e == null) return;
 
     if (!_confirmar('Deseja alterar o executor para "${e.nome}"?')) return;
-    await dao.atualizar(os.copyWith(usuarioExecutorId: e.id));
+    await dao.atualizar(os.copyWith(executorId: e.id));
     print('Executor atualizado!');
   }
 

@@ -1,24 +1,7 @@
 import 'dart:io';
 
-import 'material.dart';
-import 'material_dao.dart';
-
-extension _MaterialCopy on Material {
-  Material copyWith({
-    String? nome,
-    double? quantidade,
-    double? valorMaterial,
-    DateTime? dataCompra,
-  }) {
-    return Material(
-      id: id,
-      nome: nome ?? this.nome,
-      quantidade: quantidade ?? this.quantidade,
-      valorMaterial: valorMaterial ?? this.valorMaterial,
-      dataCompra: dataCompra ?? this.dataCompra,
-    );
-  }
-}
+import '../models/material.dart';
+import '../dao/material_dao.dart';
 
 /// Dados ainda não salvos durante o cadastro.
 class _Rascunho {

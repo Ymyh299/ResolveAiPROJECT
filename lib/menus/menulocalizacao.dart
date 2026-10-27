@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'localizacao.dart';
-import 'localizacao_dao.dart';
+import '../models/localizacao.dart';
+import '../dao/localizacao_dao.dart';
 
 class LocalizacaoMenu {
   final LocalizacaoDao dao;
@@ -543,4 +543,22 @@ class LocalizacaoMenu {
     _ler();
     return true;
   }
+
+  Future<int?> cadastrarERetornarId() async {
+  _cabecalho('Cadastrar Localização');
+  print('Digite [0] para cancelar\n');
+
+  final nome = _lerObrigatorio('Nome da localização:');
+  if (nome == null) return null;
+
+  int? paiId;
+  if (_confirmar('Esta localização possui uma localização\nsuperior?')) {
+    final pai = await selecionarPai();
+    if (pai == null) return null;
+    paiId = pai.id;
+  }
+
+  final cadastrada = await _resumoCadastro(nome, paiId);
+  return cadastrada?.id;
+}
 }

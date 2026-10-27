@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import '../models/setor.dart';
-// Ajuste os imports conforme a estrutura do seu projeto:
-// import 'setor_dao.dart';
-// import 'usuario_dao.dart';
+import '../dao/setor_dao.dart';
+import '../dao/usuario_dao.dart';
 
 /// Menus do módulo de Setores (apenas interface de console).
 /// Toda persistência é delegada aos DAOs.

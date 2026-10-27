@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:crypto/crypto.dart'; // dart pub add crypto
+import 'package:crypto/crypto.dart';
+import '../utils/utils.dart';
 
-/// Perfil do usuário no sistema.
 enum TipoUsuario {
   administrador(1, 'Administrador'),
   comum(2, 'Usuário comum');
@@ -14,10 +14,11 @@ enum TipoUsuario {
 
   static TipoUsuario fromCodigo(int c) =>
       TipoUsuario.values.firstWhere((t) => t.codigo == c);
+
+  static TipoUsuario fromNome(String n) =>
+      TipoUsuario.values.firstWhere((t) => t.name == n);
 }
 
-/// Representa um usuário do sistema (a pessoa que registra e/ou executa
-/// Ordens de Serviço)
 class Usuario {
   final int? id;
   final String nome;
@@ -25,7 +26,7 @@ class Usuario {
   final String cpf;
   final String telefone;
   final String email;
-  final String senhaHash; // NUNCA guardar a senha em texto puro
+  final String senhaHash;
   final int setorId;
   final TipoUsuario tipoUsuario;
 
@@ -68,41 +69,35 @@ class Usuario {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'idUSUARIO': id,
       'nome': nome,
-      'data_cadastro': dataCadastro.toIso8601String(),
+      'data_cadastro': gravarDataHora(dataCadastro),
       'cpf': cpf,
-      'telefone': telefone,
+      'telefone': telefone.isEmpty ? null : telefone,
       'email': email,
-      'senha_hash': senhaHash,
-      'setor_id': setorId,
-      'tipo_usuario': tipoUsuario.codigo,
+      'senha': senhaHash,
+      'tipo_usuario': tipoUsuario.name,
+      'SETOR_idSETOR': setorId,
     };
   }
 
   factory Usuario.fromMap(Map<String, dynamic> map) {
     return Usuario(
-      id: map['id'] as int?,
+      id: map['idUSUARIO'] as int?,
       nome: map['nome'] as String,
-      dataCadastro: DateTime.parse(map['data_cadastro'] as String),
+      dataCadastro: lerData(map['data_cadastro']),
       cpf: map['cpf'] as String,
-      telefone: map['telefone'] as String,
+      telefone: (map['telefone'] as String?) ?? '',
       email: map['email'] as String,
-      senhaHash: map['senha_hash'] as String,
-      setorId: map['setor_id'] as int,
-      tipoUsuario: TipoUsuario.fromCodigo(map['tipo_usuario'] as int),
+      senhaHash: map['senha'] as String,
+      setorId: map['SETOR_idSETOR'] as int,
+      tipoUsuario: TipoUsuario.fromNome(map['tipo_usuario'] as String),
     );
   }
 
   @override
   String toString() => 'Usuario(id: $id, nome: $nome, setorId: $setorId)';
 
-  // ---------------------------------------------------------------------------
-  // HASH DE SENHA
-  // ---------------------------------------------------------------------------
-
-  /// Gera "salt:hash" (SHA-256 salgado com 10.000 iterações).
-  /// Para produção, prefira bcrypt/argon2 (ex.: pacote `dbcrypt`).
   static String gerarHash(String senha, {String? salt}) {
     final s = salt ??
         base64UrlEncode(
@@ -114,7 +109,6 @@ class Usuario {
     return '$s:${base64UrlEncode(bytes)}';
   }
 
-  /// Usado no login: compara a senha digitada com o hash salvo.
   static bool verificarSenha(String senha, String hashSalvo) {
     final salt = hashSalvo.split(':').first;
     return gerarHash(senha, salt: salt) == hashSalvo;

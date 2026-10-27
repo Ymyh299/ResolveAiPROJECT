@@ -1,8 +1,6 @@
-/// Representa um bem patrimonial do clube (ex: uma bomba de piscina, um
-/// ar-condicionado, um cortador de grama) que pode precisar de manutenção
-/// e, por isso, pode "receber" Ordens de Serviço.
+import '../utils/utils.dart';
+
 class Patrimonio {
-  /// Opções de estado de conservação, na ordem exibida no menu.
   static const List<String> estados = [
     'Novo',
     'Bom',
@@ -15,29 +13,25 @@ class Patrimonio {
   final String nome;
   final int localizacaoId;
   final String? descricao;
-  final String numeroPatrimonio;
-  final double valor;
-  final String estadoConservacao;
-  final DateTime dataCompra;
+  final double? valor;
+  final String? estadoConservacao;
+  final DateTime? dataCompra;
 
   Patrimonio({
     this.id,
     required this.nome,
     required this.localizacaoId,
     this.descricao,
-    required this.numeroPatrimonio,
-    required this.valor,
-    required this.estadoConservacao,
-    required this.dataCompra,
+    this.valor,
+    this.estadoConservacao,
+    this.dataCompra,
   });
 
-  /// Cria uma cópia alterando apenas os campos informados.
   Patrimonio copyWith({
     int? id,
     String? nome,
     int? localizacaoId,
     String? descricao,
-    String? numeroPatrimonio,
     double? valor,
     String? estadoConservacao,
     DateTime? dataCompra,
@@ -47,40 +41,37 @@ class Patrimonio {
       nome: nome ?? this.nome,
       localizacaoId: localizacaoId ?? this.localizacaoId,
       descricao: descricao ?? this.descricao,
-      numeroPatrimonio: numeroPatrimonio ?? this.numeroPatrimonio,
       valor: valor ?? this.valor,
       estadoConservacao: estadoConservacao ?? this.estadoConservacao,
       dataCompra: dataCompra ?? this.dataCompra,
     );
   }
 
+  // Mapeia os atributos Dart para as colunas reais do banco.
+  // O ID é gerado automaticamente pelo MySQL.
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'nome': nome,
-      'localizacao_id': localizacaoId,
-      'descricao': descricao,
-      'numero_patrimonio': numeroPatrimonio,
       'valor': valor,
+      'descricao': descricao,
       'estado_conservacao': estadoConservacao,
-      'data_compra': dataCompra.toIso8601String(),
+      'data_compra': gravarData(dataCompra),
+      'LOCALIZACAO_idLOCALIZACAO': localizacaoId,
     };
   }
 
   factory Patrimonio.fromMap(Map<String, dynamic> map) {
     return Patrimonio(
-      id: map['id'] as int?,
+      id: map['idPATRIMONIO'] as int?,
       nome: map['nome'] as String,
-      localizacaoId: map['localizacao_id'] as int,
+      localizacaoId: map['LOCALIZACAO_idLOCALIZACAO'] as int,
       descricao: map['descricao'] as String?,
-      numeroPatrimonio: map['numero_patrimonio'] as String,
-      valor: (map['valor'] as num).toDouble(),
-      estadoConservacao: map['estado_conservacao'] as String,
-      dataCompra: DateTime.parse(map['data_compra'] as String),
+      valor: lerDouble(map['valor']),
+      estadoConservacao: map['estado_conservacao'] as String?,
+      dataCompra: lerData(map['data_compra']),
     );
   }
 
   @override
-  String toString() =>
-      'Patrimonio(id: $id, nome: $nome, numero: $numeroPatrimonio)';
+  String toString() => 'Patrimonio(id: $id, nome: $nome)';
 }

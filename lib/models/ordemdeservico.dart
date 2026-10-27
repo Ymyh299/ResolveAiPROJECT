@@ -1,112 +1,151 @@
-import 'statusordemdeservico.dart';
+import '../utils/utils.dart';
 
-/// Espelha a tabela ORDEMSERVICO. As chaves de toMap/fromMap são EXATAMENTE
-/// os nomes das colunas do banco, para o DAO não precisar traduzir nada.
-class OrdemServico {
-  // Valores permitidos (o banco não tem CHECK, então quem garante é o validar()).
+class OrdemDeServico {
   static const String corretiva = 'Corretiva';
   static const String preventiva = 'Preventiva';
   static const List<String> tiposValidos = [corretiva, preventiva];
-  static const List<String> prioridadesValidas = ['Baixa', 'Média', 'Alta'];
+
+  static const List<String> prioridadesValidas = [
+    'Baixa',
+    'Média',
+    'Alta',
+    'Urgente',
+  ];
+
+  static const String statusAberta = 'Aberta';
+  static const String statusEmAndamento = 'Em andamento';
+  static const String statusConcluida = 'Concluída';
+  static const String statusCancelada = 'Cancelada';
+  static const List<String> statusValidos = [
+    statusAberta,
+    statusEmAndamento,
+    statusConcluida,
+    statusCancelada,
+  ];
 
   final int? id;
   final String titulo;
   final String? observacao;
-  final DateTime dataAbertura; // nasce com a OS
-  final DateTime? dataInicio; // preenchida quando o executor assume
+  final DateTime? dataAbertura;
+  final DateTime? dataInicio;
   final DateTime? dataFim;
-  final DateTime? prazoPrevisto; // definido só pelo Administrador
-  final String prioridade; // 'Baixa', 'Média' ou 'Alta'
-  final StatusOrdemServico status;
-  final String tipoManutencao; // 'Corretiva' ou 'Preventiva'
-
-  // Recorrência (só faz sentido para preventiva)
+  final DateTime? prazoPrevisto;
+  final String prioridade;
+  final String status;
+  final String tipoManutencao;
   final bool recorrente;
   final int? intervaloDias;
-  final int? duracaoDias; // quanto tempo leva cada execução
+  final int? duracaoDias;
   final DateTime? proximaData;
+  final int solicitanteId;
+  final int? executorId;
+  final int setorId;
+  final int localizacaoId;
+  final int? patrimonioId;
 
-  final int usuarioSolicitanteId; // quem registrou
-  final int? usuarioExecutorId; // nulo até alguém assumir
-  final int setorId; // setor responsável
-  final int localizacaoId; // sempre obrigatória
-  final int? patrimonioId; // opcional: problema geral não tem patrimônio
-
-  OrdemServico({
+  OrdemDeServico({
     this.id,
     required this.titulo,
     this.observacao,
-    DateTime? dataAbertura,
+    this.dataAbertura,
     this.dataInicio,
     this.dataFim,
     this.prazoPrevisto,
-    this.prioridade = 'Média',
-    this.status = StatusOrdemServico.aberta, // toda OS nasce "aberta"
+    required this.prioridade,
+    required this.status,
     required this.tipoManutencao,
     this.recorrente = false,
     this.intervaloDias,
     this.duracaoDias,
     this.proximaData,
-    required this.usuarioSolicitanteId,
-    this.usuarioExecutorId,
+    required this.solicitanteId,
+    this.executorId,
     required this.setorId,
     required this.localizacaoId,
     this.patrimonioId,
-  }) : dataAbertura = dataAbertura ?? DateTime.now();
+  });
 
-  /// "Atrasada" não é gravada no banco: é calculada, igual à regra da view.
-  bool get estaAtrasada {
-    final prazo = prazoPrevisto;
-    if (prazo == null) return false;
-    if (status == StatusOrdemServico.concluida ||
-        status == StatusOrdemServico.cancelada) {
-      return false;
-    }
+  bool get atrasada {
+    if (status == statusCancelada || status == statusConcluida) return false;
+    final limite = proximaData ?? prazoPrevisto;
     final agora = DateTime.now();
     final hoje = DateTime(agora.year, agora.month, agora.day);
-    final limite = DateTime(prazo.year, prazo.month, prazo.day);
-    return limite.isBefore(hoje);
+    return dataFim == null && limite != null && limite.isBefore(hoje);
   }
 
-  /// O banco atual não tem CHECK para essas regras, então a validação mora
-  /// aqui. Chame antes de inserir/atualizar (o service faz isso).
-  /// Troque ArgumentError pela exceção própria do projeto, se preferir.
+  /// Lança ArgumentError se a OS estiver inconsistente.
   void validar() {
-    if (titulo.trim().isEmpty) {
-      throw ArgumentError('O título da OS é obrigatório.');
+    if (titulo.trim().isEmpty) throw ArgumentError('O título é obrigatório.');
+    if (!prioridadesValidas.contains(prioridade)) {
+      throw ArgumentError('Prioridade inválida: $prioridade');
+    }
+    if (!statusValidos.contains(status)) {
+      throw ArgumentError('Status inválido: $status');
     }
     if (!tiposValidos.contains(tipoManutencao)) {
-      throw ArgumentError(
-          'Tipo de manutenção inválido: "$tipoManutencao". Use $tiposValidos.');
+      throw ArgumentError('Tipo de manutenção inválido: $tipoManutencao');
     }
-    if (!prioridadesValidas.contains(prioridade)) {
-      throw ArgumentError(
-          'Prioridade inválida: "$prioridade". Use $prioridadesValidas.');
+    if (dataInicio != null && dataFim != null && dataFim!.isBefore(dataInicio!)) {
+      throw ArgumentError('A data de conclusão não pode ser anterior à de início.');
     }
-
-    final inicio = dataInicio;
-    final fim = dataFim;
-    if (inicio != null && fim != null && fim.isBefore(inicio)) {
-      throw ArgumentError('A data de fim não pode ser anterior à de início.');
-    }
-
     if (tipoManutencao == preventiva) {
       if (!recorrente ||
-          (intervaloDias ?? 0) <= 0 ||
-          (duracaoDias ?? 0) <= 0 ||
+          intervaloDias == null || intervaloDias! <= 0 ||
+          duracaoDias == null || duracaoDias! <= 0 ||
           proximaData == null) {
         throw ArgumentError(
-            'Preventiva exige recorrência, intervalo, duração e próxima data.');
+            'Manutenção preventiva exige recorrência com intervalo, duração e próxima data.');
       }
-      if (status == StatusOrdemServico.concluida) {
-        throw ArgumentError('Preventiva não é concluída: ela se renova.');
-      }
-    } else if (recorrente ||
-        intervaloDias != null ||
-        duracaoDias != null ||
-        proximaData != null) {
-      throw ArgumentError('Corretiva não pode ter campos de recorrência.');
+    } else if (recorrente) {
+      throw ArgumentError('Apenas manutenção preventiva pode ser recorrente.');
     }
+  }
+
+  /// Campos null mantêm o valor atual. Para apagar a data de conclusão,
+  /// use limparDataFim: true.
+  OrdemDeServico copyWith({
+    int? id,
+    String? titulo,
+    String? observacao,
+    DateTime? dataAbertura,
+    DateTime? dataInicio,
+    DateTime? dataFim,
+    bool limparDataFim = false,
+    DateTime? prazoPrevisto,
+    String? prioridade,
+    String? status,
+    String? tipoManutencao,
+    bool? recorrente,
+    int? intervaloDias,
+    int? duracaoDias,
+    DateTime? proximaData,
+    int? solicitanteId,
+    int? executorId,
+    int? setorId,
+    int? localizacaoId,
+    int? patrimonioId,
+  }) {
+    return OrdemDeServico(
+      id: id ?? this.id,
+      titulo: titulo ?? this.titulo,
+      observacao: observacao ?? this.observacao,
+      dataAbertura: dataAbertura ?? this.dataAbertura,
+      dataInicio: dataInicio ?? this.dataInicio,
+      dataFim: limparDataFim ? null : (dataFim ?? this.dataFim),
+      prazoPrevisto: prazoPrevisto ?? this.prazoPrevisto,
+      prioridade: prioridade ?? this.prioridade,
+      status: status ?? this.status,
+      tipoManutencao: tipoManutencao ?? this.tipoManutencao,
+      recorrente: recorrente ?? this.recorrente,
+      intervaloDias: intervaloDias ?? this.intervaloDias,
+      duracaoDias: duracaoDias ?? this.duracaoDias,
+      proximaData: proximaData ?? this.proximaData,
+      solicitanteId: solicitanteId ?? this.solicitanteId,
+      executorId: executorId ?? this.executorId,
+      setorId: setorId ?? this.setorId,
+      localizacaoId: localizacaoId ?? this.localizacaoId,
+      patrimonioId: patrimonioId ?? this.patrimonioId,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -114,135 +153,49 @@ class OrdemServico {
       'idORDEMSERVICO': id,
       'titulo_os': titulo,
       'observacao': observacao,
-      'data_abertura': _fmtDateTime(dataAbertura),
-      'data_inicio': _fmtDateTime(dataInicio),
-      'data_fim': _fmtDateTime(dataFim),
-      'prazo_previsto': _fmtDate(prazoPrevisto),
+      if (dataAbertura != null) 'data_abertura': gravarDataHora(dataAbertura),
+      'data_inicio': gravarDataHora(dataInicio),
+      'data_fim': gravarDataHora(dataFim),
+      'prazo_previsto': gravarData(prazoPrevisto),
       'prioridade': prioridade,
-      'status': status.toValue(),
+      'status': status,
       'tipo_manutencao': tipoManutencao,
       'recorrente': recorrente ? 1 : 0,
       'intervalo_dias': intervaloDias,
       'duracao_dias': duracaoDias,
-      'proxima_data': _fmtDate(proximaData),
-      'USUARIO_idSolicitante': usuarioSolicitanteId,
-      'USUARIO_idExecutor': usuarioExecutorId,
+      'proxima_data': gravarData(proximaData),
+      'USUARIO_idSolicitante': solicitanteId,
+      'USUARIO_idExecutor': executorId,
       'SETOR_idSETOR': setorId,
       'LOCALIZACAO_idLOCALIZACAO': localizacaoId,
       'PATRIMONIO_idPATRIMONIO': patrimonioId,
     };
   }
 
-  factory OrdemServico.fromMap(Map<String, dynamic> map) {
-    return OrdemServico(
-      id: _toInt(map['idORDEMSERVICO']),
+  factory OrdemDeServico.fromMap(Map<String, dynamic> map) {
+    return OrdemDeServico(
+      id: map['idORDEMSERVICO'] as int?,
       titulo: map['titulo_os'] as String,
       observacao: map['observacao'] as String?,
-      dataAbertura: _toDateTime(map['data_abertura']),
-      dataInicio: _toDateTime(map['data_inicio']),
-      dataFim: _toDateTime(map['data_fim']),
-      prazoPrevisto: _toDateTime(map['prazo_previsto']),
+      dataAbertura: lerData(map['data_abertura']),
+      dataInicio: lerData(map['data_inicio']),
+      dataFim: lerData(map['data_fim']),
+      prazoPrevisto: lerData(map['prazo_previsto']),
       prioridade: map['prioridade'] as String,
-      status: StatusOrdemServico.fromValue(map['status'] as String),
+      status: map['status'] as String,
       tipoManutencao: map['tipo_manutencao'] as String,
-      recorrente: _toBool(map['recorrente']),
-      intervaloDias: _toInt(map['intervalo_dias']),
-      duracaoDias: _toInt(map['duracao_dias']),
-      proximaData: _toDateTime(map['proxima_data']),
-      usuarioSolicitanteId: _toInt(map['USUARIO_idSolicitante'])!,
-      usuarioExecutorId: _toInt(map['USUARIO_idExecutor']),
-      setorId: _toInt(map['SETOR_idSETOR'])!,
-      localizacaoId: _toInt(map['LOCALIZACAO_idLOCALIZACAO'])!,
-      patrimonioId: _toInt(map['PATRIMONIO_idPATRIMONIO']),
-    );
-  }
-
-  /// Cópia com campos alterados — ex.: o executor assume a OS
-  /// (copyWith(status: ..., usuarioExecutorId: ..., dataInicio: ...)).
-  /// Limitação: não dá para "limpar" um campo opcional passando null.
-  OrdemServico copyWith({
-    String? titulo,
-    String? observacao,
-    DateTime? dataInicio,
-    DateTime? dataFim,
-    DateTime? prazoPrevisto,
-    String? prioridade,
-    StatusOrdemServico? status,
-    bool? recorrente,
-    int? intervaloDias,
-    int? duracaoDias,
-    DateTime? proximaData,
-    int? usuarioExecutorId,
-    int? patrimonioId,
-  }) {
-    return OrdemServico(
-      id: id,
-      titulo: titulo ?? this.titulo,
-      observacao: observacao ?? this.observacao,
-      dataAbertura: dataAbertura,
-      dataInicio: dataInicio ?? this.dataInicio,
-      dataFim: dataFim ?? this.dataFim,
-      prazoPrevisto: prazoPrevisto ?? this.prazoPrevisto,
-      prioridade: prioridade ?? this.prioridade,
-      status: status ?? this.status,
-      tipoManutencao: tipoManutencao,
-      recorrente: recorrente ?? this.recorrente,
-      intervaloDias: intervaloDias ?? this.intervaloDias,
-      duracaoDias: duracaoDias ?? this.duracaoDias,
-      proximaData: proximaData ?? this.proximaData,
-      usuarioSolicitanteId: usuarioSolicitanteId,
-      usuarioExecutorId: usuarioExecutorId ?? this.usuarioExecutorId,
-      setorId: setorId,
-      localizacaoId: localizacaoId,
-      patrimonioId: patrimonioId ?? this.patrimonioId,
+      recorrente: map['recorrente'] == 1 || map['recorrente'] == true,
+      intervaloDias: map['intervalo_dias'] as int?,
+      duracaoDias: map['duracao_dias'] as int?,
+      proximaData: lerData(map['proxima_data']),
+      solicitanteId: map['USUARIO_idSolicitante'] as int,
+      executorId: map['USUARIO_idExecutor'] as int?,
+      setorId: map['SETOR_idSETOR'] as int,
+      localizacaoId: map['LOCALIZACAO_idLOCALIZACAO'] as int,
+      patrimonioId: map['PATRIMONIO_idPATRIMONIO'] as int?,
     );
   }
 
   @override
-  String toString() =>
-      'OrdemServico(id: $id, $tipoManutencao, "$titulo", '
-      'status: ${status.toValue()})';
-}
-
-// ---------------------------------------------------------------------------
-// Conversores tolerantes: o driver pode devolver DateTime/int/bool ou texto,
-// dependendo do pacote MySQL usado. Assim o fromMap funciona nos dois casos.
-// ---------------------------------------------------------------------------
-
-DateTime? _toDateTime(dynamic v) {
-  if (v == null) return null;
-  if (v is DateTime) return v;
-  if (v is String) return DateTime.parse(v);
-  throw FormatException('Data inválida vinda do banco: $v');
-}
-
-int? _toInt(dynamic v) {
-  if (v == null) return null;
-  if (v is int) return v;
-  if (v is num) return v.toInt();
-  if (v is String) return int.parse(v);
-  throw FormatException('Inteiro inválido vindo do banco: $v');
-}
-
-bool _toBool(dynamic v) {
-  if (v == null) return false;
-  if (v is bool) return v;
-  if (v is num) return v != 0;
-  if (v is String) return v == '1' || v.toLowerCase() == 'true';
-  return false;
-}
-
-/// Formato aceito pelo MySQL em colunas DATETIME.
-String? _fmtDateTime(DateTime? d) {
-  if (d == null) return null;
-  String dois(int n) => n.toString().padLeft(2, '0');
-  return '${d.year.toString().padLeft(4, '0')}-${dois(d.month)}-${dois(d.day)} '
-      '${dois(d.hour)}:${dois(d.minute)}:${dois(d.second)}';
-}
-
-/// Formato aceito pelo MySQL em colunas DATE.
-String? _fmtDate(DateTime? d) {
-  if (d == null) return null;
-  String dois(int n) => n.toString().padLeft(2, '0');
-  return '${d.year.toString().padLeft(4, '0')}-${dois(d.month)}-${dois(d.day)}';
+  String toString() => 'OrdemDeServico(id: $id, titulo: $titulo, status: $status)';
 }

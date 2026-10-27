@@ -1,60 +1,27 @@
-/// Essa é a classe mais "básica" do sistema: nenhuma outra classe é
-/// necessária pra criar um Setor, por isso começamos por ela.
 class Setor {
-  final int? id; // pode ser nulo antes de salvar no banco (o banco gera o id)
+  final int? id;
   final String nome;
   final String? descricao;
-  final int?
-  prioridade; // ex: 1 (alta) a 5 (baixa) — ajuste a escala com seu grupo
-  final String?
-  duracao; // duração padrão de atendimento do setor (ex: "2h", "30min")
 
-  Setor({
-    this.id,
-    required this.nome,
-    this.descricao,
-    this.prioridade,
-    this.duracao,
-  });
+  Setor({this.id, required this.nome, this.descricao});
 
-  /// Cria uma cópia alterando apenas os campos informados.
-  /// (Para limpar a descrição, passe uma String vazia e trate no DAO/menu.)
-  Setor copyWith({
-    int? id,
-    String? nome,
-    String? descricao,
-    int? prioridade,
-    String? duracao,
-  }) {
+  Setor copyWith({int? id, String? nome, String? descricao}) {
     return Setor(
       id: id ?? this.id,
       nome: nome ?? this.nome,
       descricao: descricao ?? this.descricao,
-      prioridade: prioridade ?? this.prioridade,
-      duracao: duracao ?? this.duracao,
     );
   }
 
-  /// Converte a classe em um Map, formato usado para salvar no banco de dados
-  /// ou transformar em JSON pra enviar pelo front end.
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'nome': nome,
-      'descricao': descricao,
-      'prioridade': prioridade,
-      'duracao': duracao,
-    };
+    return {'idSETOR': id, 'nome': nome, 'descricao': descricao};
   }
 
-  /// Cria um Setor a partir de um Map (ex: vindo do banco de dados ou da API).
   factory Setor.fromMap(Map<String, dynamic> map) {
     return Setor(
-      id: map['id'] as int?,
+      id: map['idSETOR'] as int?,
       nome: map['nome'] as String,
       descricao: map['descricao'] as String?,
-      prioridade: map['prioridade'] as int?,
-      duracao: map['duracao'] as String?,
     );
   }
 

@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'material.dart';
-import 'material_dao.dart';
-import 'ordem_servico_material_dao.dart';
-import 'ordemservico.dart';
-import 'statusordemdeservico.dart';
+import '../models/material.dart';
+import '../dao/material_dao.dart';
+import '../dao/ordem_servico_material_dao.dart';
+import '../models/ordemdeservico.dart';
+import '../models/ordemdeservicomaterial.dart';
 
 class OrdemServicoMaterialMenu {
-  final OrdemServicoMaterialDao dao;
+  final OrdemDeServicoMaterialDao dao;
   final MaterialDao materialDao;
 
   final int usuarioId;
@@ -32,10 +32,10 @@ class OrdemServicoMaterialMenu {
 
   // ----- Regra de permissão (ajuste aqui) -----
   /// Mesma regra de alterar status: admin, executor da OS ou OS sem executor.
-  bool _podeRegistrar(OrdemServico os) =>
+  bool _podeRegistrar(OrdemDeServico os) =>
       isAdmin ||
-      os.usuarioExecutorId == usuarioId ||
-      os.usuarioExecutorId == null;
+      os.executorId == usuarioId ||
+      os.executorId == null;
 
   // ===========================================================
   // HELPERS
@@ -88,15 +88,17 @@ class OrdemServicoMaterialMenu {
     }
   }
 
+  bool _statusBloqueiaRegistro(String status) =>
+      status == OrdemDeServico.statusCancelada ||
+      status == OrdemDeServico.statusConcluida;
+
   // ===========================================================
   // REGISTRAR MATERIAIS UTILIZADOS (tela de detalhes da OS)
   // ===========================================================
 
-  Future<void> registrarMateriais(OrdemServico os) async {
-    if (os.status == StatusOrdemServico.cancelada ||
-        os.status == StatusOrdemServico.concluida) {
-      print('Não é possível registrar materiais em uma OS '
-          '${os.status.toValue()}.');
+  Future<void> registrarMateriais(OrdemDeServico os) async {
+    if (_statusBloqueiaRegistro(os.status)) {
+      print('Não é possível registrar materiais em uma OS ${os.status}.');
       return;
     }
     if (!_podeRegistrar(os)) {
@@ -141,7 +143,9 @@ class OrdemServicoMaterialMenu {
   }
 
   Future<Material?> _selecionarPorCodigo() async {
-    final id = int.tryParse(_ler('Digite o código do material (0 para voltar):'));
+    final id = int.tryParse(
+      _ler('Digite o código do material (0 para voltar):'),
+    );
     if (id == null || id == 0) return null;
     final m = await materialDao.buscarPorId(id);
     if (m == null) print('Nenhum material encontrado com esse código.');
@@ -161,8 +165,10 @@ class OrdemServicoMaterialMenu {
     while (true) {
       _cabecalho('Resultados Encontrados');
       for (var i = 0; i < resultados.length; i++) {
-        print('[${i + 1}] ${resultados[i].nome} '
-            '(estoque: ${_qtd(resultados[i].quantidade)})');
+        print(
+          '[${i + 1}] ${resultados[i].nome} '
+          '(estoque: ${_qtd(resultados[i].quantidade)})',
+        );
       }
       print('[0] Voltar\n');
 
@@ -176,7 +182,7 @@ class OrdemServicoMaterialMenu {
   }
 
   /// Resumo -> [1] Confirmar / [0] Cancelar. Retorna true se registrou.
-  Future<bool> _adicionar(OrdemServico os, Material m) async {
+  Future<bool> _adicionar(OrdemDeServico os, Material m) async {
     _cabecalho('Registrar Material');
     print('Material: ${m.nome}');
     print('Estoque atual: ${_qtd(m.quantidade)}\n');
@@ -207,14 +213,9 @@ class OrdemServicoMaterialMenu {
       switch (_ler()) {
         case '1':
           try {
-            await dao.registrarUso(OrdemServicoMaterial(
-              ordemServicoId: os.id!,
-              materialId: m.id!,
-              quantidade: qtd,
-              dataUso: DateTime.now(),
-            ));
-          } on StateError catch (e) {
-            print('Não foi possível registrar: ${e.message}');
+            await dao.registrarUso(os.id!, m.id!, qtd);
+          } on Exception catch (e) {
+            print('Não foi possível registrar: ${e.toString().replaceFirst('Exception: ', '')}');
             return false;
           }
           print('Material registrado com sucesso!');
@@ -233,7 +234,7 @@ class OrdemServicoMaterialMenu {
     }
   }
 
-  Future<void> _verRegistrados(OrdemServico os) async {
+  Future<void> _verRegistrados(OrdemDeServico os) async {
     final usos = await dao.listarPorOs(os.id!);
     if (usos.isEmpty) {
       print('\nNenhum material registrado nesta OS.');
@@ -244,33 +245,39 @@ class OrdemServicoMaterialMenu {
     print('\nTotal de registros: ${usos.length}');
   }
 
-  Future<void> _remover(OrdemServico os) async {
-    final usos = await dao.listarPorOs(os.id!);
-    if (usos.isEmpty) {
-      print('\nNenhum material registrado nesta OS.');
-      return;
-    }
-    _cabecalho('Remover Material Registrado');
-    _imprimirTabela(usos);
-
-    final id = int.tryParse(_ler('\nDigite o ID do registro (0 para voltar):'));
-    if (id == null || id == 0) return;
-    final uso = usos.where((u) => u.id == id);
-    if (uso.isEmpty) {
-      print('Registro não encontrado nesta OS.');
-      return;
-    }
-
-    final u = uso.first;
-    print('\nMaterial: ${u.materialNome}');
-    print('Quantidade: ${_qtd(u.quantidade)}');
-    if (!_confirmar('Deseja remover este registro?\n'
-        '(a quantidade será devolvida ao estoque)')) {
-      return;
-    }
-    await dao.estornarUso(u.id);
-    print('Registro removido e estoque atualizado!');
+  Future<void> _remover(OrdemDeServico os) async {
+  final usos = await dao.listarPorOs(os.id!);
+  if (usos.isEmpty) {
+    print('\nNenhum material registrado nesta OS.');
+    return;
   }
+  _cabecalho('Remover Material Registrado');
+  _imprimirTabela(usos);
+
+  final id = int.tryParse(_ler('\nDigite o ID do registro (0 para voltar):'));
+  if (id == null || id == 0) return;
+  final achados = usos.where((u) => u.id == id);
+  if (achados.isEmpty) {
+    print('Registro não encontrado nesta OS.');
+    return;
+  }
+
+  final u = achados.first;
+  print('\nMaterial: ${u.materialNome}');
+  print('Quantidade: ${_qtd(u.quantidade)}');
+
+  if (!_confirmar('Deseja remover este registro?\n'
+      '(a quantidade será devolvida ao estoque)')) {
+    return;
+  }
+
+  try {
+    await dao.removerUso(u.id);
+    print('Registro removido e estoque atualizado!');
+  } on Exception catch (e) {
+    print('Não foi possível remover: ${e.toString().replaceFirst('Exception: ', '')}');
+  }
+}
 
   // ===========================================================
   // HISTÓRICO DE UTILIZAÇÃO (callbacks do MaterialMenu)
@@ -323,11 +330,13 @@ class OrdemServicoMaterialMenu {
     print('ID    Data        OS     Material            Qtd');
     print('-------------------------------------------------');
     for (final u in usos) {
-      print('${u.id.toString().padRight(6)}'
-          '${_data(u.dataUso).padRight(12)}'
-          '${('#${u.ordemServicoId}').padRight(7)}'
-          '${_cortar(u.materialNome, 18).padRight(20)}'
-          '${_qtd(u.quantidade)}');
+      print(
+        '${u.id.toString().padRight(6)}'
+        '${_data(u.dataUso).padRight(12)}'
+        '${('#${u.ordemServicoId}').padRight(7)}'
+        '${_cortar(u.materialNome, 18).padRight(20)}'
+        '${_qtd(u.quantidade)}',
+      );
     }
   }
 
@@ -361,14 +370,14 @@ class OrdemServicoMaterialMenu {
       print('[0] Voltar\n');
 
       switch (_ler('Selecione uma opção:')) {
-        case '1':
-          final osId = int.tryParse(_ler('Digite o número da OS:'));
-          if (osId == null || !usos.any((u) => u.ordemServicoId == osId)) {
-            print('OS não encontrada neste histórico.');
-          } else {
-            await abrirOs(osId);
-          }
-          break;
+          case '1':
+            final osId = int.tryParse(_ler('Digite o número da OS:'));
+            if (osId == null || !usos.any((u) => u.ordemServicoId == osId)) {
+              print('OS não encontrada neste histórico.');
+            } else {
+              await abrirOs(osId);
+            }
+            break;
         case '2':
           if (pagina < totalPaginas - 1) {
             pagina++;

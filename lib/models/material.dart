@@ -14,6 +14,22 @@ class Material {
     required this.dataCompra,
   });
 
+    Material copyWith({
+    int? id,
+    String? nome,
+    double? quantidade,
+    double? valorMaterial,
+    DateTime? dataCompra,
+  }) {
+    return Material(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      quantidade: quantidade ?? this.quantidade,
+      valorMaterial: valorMaterial ?? this.valorMaterial,
+      dataCompra: dataCompra ?? this.dataCompra,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,

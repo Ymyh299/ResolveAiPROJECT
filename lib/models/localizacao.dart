@@ -1,13 +1,20 @@
 class Localizacao {
   final int? id;
   final String nome;
-
-  /// Localização superior (null = localização raiz, ex.: "Área A").
   final int? paiId;
 
-  Localizacao({this.id, required this.nome, this.paiId});
+  Localizacao({
+    this.id,
+    required this.nome,
+    this.paiId,
+  });
 
-  Localizacao copyWith({int? id, String? nome, int? paiId, bool removerPai = false}) {
+  Localizacao copyWith({
+    int? id,
+    String? nome,
+    int? paiId,
+    bool removerPai = false,
+  }) {
     return Localizacao(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -15,15 +22,19 @@ class Localizacao {
     );
   }
 
+  // Mapeia os atributos para as colunas reais do banco.
   Map<String, dynamic> toMap() {
-    return {'id': id, 'nome': nome, 'pai_id': paiId};
+    return {
+      'nome_localizacao': nome,
+      'LOCALIZACAO_idPAI': paiId,
+    };
   }
 
   factory Localizacao.fromMap(Map<String, dynamic> map) {
     return Localizacao(
-      id: map['id'] as int?,
-      nome: map['nome'] as String,
-      paiId: map['pai_id'] as int?,
+      id: map['idLOCALIZACAO'] as int?,
+      nome: map['nome_localizacao'] as String,
+      paiId: map['LOCALIZACAO_idPAI'] as int?,
     );
   }
 
