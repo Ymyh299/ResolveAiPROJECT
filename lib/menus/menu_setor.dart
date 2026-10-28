@@ -4,14 +4,7 @@ import '../models/setor.dart';
 import '../dao/setor_dao.dart';
 import '../dao/usuario_dao.dart';
 
-/// Menus do módulo de Setores (apenas interface de console).
-/// Toda persistência é delegada aos DAOs.
-///
-/// DAOs esperados:
-///   SetorDao:   inserir(Setor)->int, buscarPorId(int)->Setor?,
-///               buscarPorNome(String)->List<Setor>, listar()->List<Setor>,
-///               atualizar(Setor), excluir(int)
-///   UsuarioDao: contarPorSetor(int)->int, buscarPorSetor(int)->List<Usuario>
+
 class MenuSetor {
   // ===========================================================================
   // 6.1 GERENCIAR SETORES
