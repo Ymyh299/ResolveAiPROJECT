@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dotenv/dotenv.dart';
 
 import 'package:projeto_resolveai/database/conexao.dart';
-
 import 'package:projeto_resolveai/models/usuario.dart';
 import 'package:projeto_resolveai/models/setor.dart';
 import 'package:projeto_resolveai/models/sessao.dart';
@@ -25,6 +24,9 @@ import 'package:projeto_resolveai/menus/menumaterial.dart';
 import 'package:projeto_resolveai/menus/menuordemservico.dart';
 import 'package:projeto_resolveai/menus/menuordemservicomaterial.dart';
 
+// limparTela() e pausar() agora ficam em um arquivo só, usado por todos os menus.
+import 'package:projeto_resolveai/utils/utils.dart';
+
 /// Estoque menor ou igual a este valor é considerado "baixo".
 const double limiteEstoqueBaixo = 10;
 
@@ -37,10 +39,12 @@ const bool setoresEUsuariosSomenteAdmin = true;
 // =============================================================================
 
 Future<void> main() async {
-  _cabecalho('Resolve Aí');
+  _cabecalho('Resolve Aí'); // o _cabecalho já limpa a tela
   print('Iniciando o sistema...');
 
   if (!await _prepararBanco()) exit(1);
+
+  pausar();
 
   try {
     await _primeiroAcesso();
@@ -204,7 +208,6 @@ Future<bool> _salvarPrimeiroAdmin(_NovoAdmin d) async {
   try {
     if (d.setor == null) {
       final setorId = await SetorDao().inserir(Setor(nome: d.setorNovo));
-      // Guarda o setor criado: se o usuário falhar, não cria o setor de novo.
       d.setor = Setor(id: setorId, nome: d.setorNovo);
     }
 
@@ -224,11 +227,11 @@ Future<bool> _salvarPrimeiroAdmin(_NovoAdmin d) async {
     print('ID: #$id');
     print('Nome: ${d.nome}');
     print('\nAgora entre com o e-mail e a senha cadastrados.');
-    _ler('\n[0] Continuar');
+    pausar();
     return true;
   } catch (e) {
     print('\nNão foi possível cadastrar: $e');
-    _ler('Pressione ENTER para voltar ao resumo...');
+    pausar();
     return false;
   }
 }
@@ -252,6 +255,7 @@ Future<Usuario?> _telaLogin() async {
     }
     if (email.isEmpty) {
       print('\nInforme o e-mail.');
+      pausar();
       continue;
     }
     final senha = _lerSenha('\nSenha:');
@@ -265,7 +269,10 @@ Future<Usuario?> _telaLogin() async {
         continue;
       }
 
+      limparTela();
       print('\nBem-vindo(a), ${usuario.nome}!');
+      // Dá um segundo para ler antes da Home limpar a tela.
+      await Future.delayed(const Duration(seconds: 1));
       return usuario;
     } catch (e) {
       print('\nErro ao acessar o banco de dados: $e');
@@ -295,7 +302,7 @@ Future<void> _home(Usuario usuario) async {
       print('5. Setores');
       print('6. Usuários');
     }
-    print('9. Trocar de usuário');
+    print('7. Trocar de usuário');
     print('0. Encerrar sistema');
     final op = _ler('\nSelecione uma opção:');
 
@@ -316,7 +323,8 @@ Future<void> _home(Usuario usuario) async {
           await MenuUsuario.menuUsuarios();
         case '5' || '6':
           print('\nAcesso restrito a administradores.');
-        case '9':
+          pausar();
+        case '7':
           if (_confirmar('Deseja trocar de usuário?')) return;
         case '0':
           MenuUsuario.encerrarSistema(); // pergunta S/N; se S, encerra o programa
@@ -363,6 +371,7 @@ _Menus _montarMenus(Usuario usuario) {
       final os = await osDao.buscarPorId(osId);
       if (os == null) {
         print('\nOS não encontrada.');
+        pausar();
         return;
       }
       await osMenu.detalhes(os);
@@ -528,11 +537,14 @@ bool _confirmar(String pergunta) {
     final r = _ler('>').toUpperCase();
     if (r == 'S') return true;
     if (r == 'N') return false;
-    _opcaoInvalida();
+    _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
   }
 }
 
+/// Limpa a tela e mostra o título. Como todo menu começa por aqui,
+/// é este o ponto que "separa" uma tela da outra.
 void _cabecalho(String titulo) {
+  limparTela();
   const largura = 33;
   final pad = ((largura - titulo.length) / 2).floor().clamp(0, largura);
   print('\n=================================');
@@ -540,4 +552,9 @@ void _cabecalho(String titulo) {
   print('=================================\n');
 }
 
-void _opcaoInvalida() => print('\nOpção inválida. Tente novamente.');
+/// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+/// quando o menu limpar a tela de novo.
+void _opcaoInvalida({bool pausa = true}) {
+  print('\nOpção inválida. Tente novamente.');
+  if (pausa) pausar();
+}

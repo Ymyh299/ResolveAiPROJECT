@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/localizacao.dart';
 import '../dao/localizacao_dao.dart';
 import '../models/ordemdeservico.dart';
@@ -137,7 +139,9 @@ class OrdemDeServicoMenu {
   // HELPERS DE CONSOLE
   // ===========================================================
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   void _cabecalho(String titulo) {
+    limparTela();
     const linha = '=================================';
     print('\n$linha');
     print(titulo.padLeft((linha.length + titulo.length) ~/ 2));
@@ -150,8 +154,13 @@ class OrdemDeServicoMenu {
     return stdin.readLineSync()?.trim() ?? '';
   }
 
-  void _opcaoInvalida() =>
-      print('Opção inválida! Selecione uma das opções disponíveis.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal. Use pausa: false quando
+  /// a pergunta é repetida logo abaixo, sem redesenhar a tela.
+  void _opcaoInvalida({bool pausa = true}) {
+    print('Opção inválida! Selecione uma das opções disponíveis.');
+    if (pausa) pausar();
+  }
 
   bool _confirmar(String pergunta) {
     while (true) {
@@ -160,7 +169,7 @@ class OrdemDeServicoMenu {
       final r = _ler().toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false);
     }
   }
 
@@ -243,7 +252,7 @@ class OrdemDeServicoMenu {
       final op = int.tryParse(raw);
       if (op == 0) return null;
       if (op != null && op >= 1 && op <= opcoes.length) return op - 1;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a lista é repetida logo abaixo
     }
   }
 
@@ -282,6 +291,7 @@ class OrdemDeServicoMenu {
       return os;
     } on ArgumentError catch (e) {
       print('Não foi possível continuar: ${e.message}');
+      pausar();
       return null;
     }
   }
@@ -408,7 +418,7 @@ class OrdemDeServicoMenu {
       final r = _ler();
       if (r == '1') return;
       if (r == '0') throw const _Navegacao(_Nav.cancelar);
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // volta a ler o mesmo menu
     }
   }
 
@@ -453,6 +463,7 @@ class OrdemDeServicoMenu {
     if (setores.isEmpty) {
       print('Nenhum setor cadastrado. Cadastre um setor antes.');
       if (wizard) throw const _Navegacao(_Nav.cancelar);
+      pausar();
       return false;
     }
     print('\nSetor responsável:');
@@ -490,7 +501,6 @@ class OrdemDeServicoMenu {
       final loc = await _navegarLocalizacao();
       if (loc == null) return false;
 
-      print('Localização selecionada: ${loc.nome}');
       final r = await _escolherPatrimonio(loc);
       if (r.escolheu) {
         d.localizacaoId = loc.id;
@@ -512,6 +522,7 @@ class OrdemDeServicoMenu {
       _cabecalho(atual == null ? 'Localização' : atual.nome);
       if (filhas.isEmpty && atual == null) {
         print('Nenhuma localização cadastrada.');
+        pausar();
         return null;
       }
       for (var i = 0; i < filhas.length; i++) {
@@ -545,6 +556,8 @@ class OrdemDeServicoMenu {
     final pats = await apoio.listarPatrimoniosPorLocalizacao(loc.id!);
 
     if (pats.isEmpty) {
+      _cabecalho('Patrimônio');
+      print('Local selecionado: ${loc.nome}\n');
       print('Nenhum patrimônio cadastrado nesta localização.\n');
       print('[1] Continuar sem patrimônio específico');
       print('[2] Escolher outra localização');
@@ -557,7 +570,7 @@ class OrdemDeServicoMenu {
           case '0':
             return (escolheu: false, patrimonioId: null);
           default:
-            _opcaoInvalida();
+            _opcaoInvalida(pausa: false); // volta a ler o mesmo menu
         }
       }
     }
@@ -603,6 +616,7 @@ class OrdemDeServicoMenu {
     final sugestao = await apoio.sugerirExecutor(d.setorId!);
     if (sugestao == null) {
       print('Nenhum executor sugerido para este setor.');
+      pausar();
       final e = await _selecionarExecutor();
       if (e == null) return false;
       d.executorId = e.id;
@@ -636,6 +650,8 @@ class OrdemDeServicoMenu {
         default:
           _opcaoInvalida();
       }
+      // Chegou aqui = vai repetir a tela: limpa e redesenha o título.
+      _cabecalho('Executor da OS');
     }
   }
 
@@ -672,6 +688,7 @@ class OrdemDeServicoMenu {
   Future<ExecutorRef?> _escolherExecutor(List<ExecutorRef> lista) async {
     if (lista.isEmpty) {
       print('Nenhum executor encontrado.');
+      pausar();
       return null;
     }
     print('\nResultados encontrados:\n');
@@ -723,7 +740,7 @@ class OrdemDeServicoMenu {
         case '2':
           if (!_confirmar('Deseja abrir esta ordem de serviço?')) break;
           final os = _construirValidando(d);
-          if (os == null) break; // mostra o erro e volta ao resumo
+          if (os == null) break; // mostra o erro (com pausa) e volta ao resumo
           return await dao.inserir(os);
         case '0':
           if (_confirmar('Deseja realmente cancelar o cadastro?')) return null;
@@ -789,6 +806,7 @@ class OrdemDeServicoMenu {
               'O tipo de manutenção não pode ser alterado '
               'depois que a OS foi aberta.',
             );
+            pausar();
             break;
           }
           print('Valor atual: ${d.tipo}');
@@ -804,10 +822,12 @@ class OrdemDeServicoMenu {
           break;
         case '5':
           print('O solicitante não pode ser alterado.');
+          pausar();
           break;
         case '6':
           if (!_podeAlterarExecutor) {
             print('Apenas administradores podem alterar o executor.');
+            pausar();
             break;
           }
           editou = await _campoExecutor(d);
@@ -824,6 +844,7 @@ class OrdemDeServicoMenu {
         case '10':
           if (!isAdmin) {
             print('Apenas administradores definem o prazo previsto.');
+            pausar();
             break;
           }
           print(
@@ -956,7 +977,7 @@ class OrdemDeServicoMenu {
           final r = _ler();
           if (r == '1') break;
           if (r == '0') return;
-          _opcaoInvalida();
+          _opcaoInvalida(pausa: false); // volta a ler o mesmo menu
         }
         continue;
       }
@@ -976,7 +997,7 @@ class OrdemDeServicoMenu {
         }
         if (r == '2') break;
         if (r == '0') return;
-        _opcaoInvalida();
+        _opcaoInvalida(pausa: false); // volta a ler o mesmo menu
       }
     }
   }
@@ -1015,6 +1036,7 @@ class OrdemDeServicoMenu {
     final fim = _lerData('Data final (DD/MM/AAAA):')!;
     if (fim.isBefore(inicio)) {
       print('A data final não pode ser anterior à inicial.');
+      pausar();
       return;
     }
     await _exibirLista('OS — Período', await dao.listarPorPeriodo(inicio, fim));
@@ -1024,6 +1046,7 @@ class OrdemDeServicoMenu {
     final setores = await apoio.listarSetores();
     if (setores.isEmpty) {
       print('Nenhum setor cadastrado.');
+      pausar();
       return;
     }
     print('\nSelecione o setor:');
@@ -1074,6 +1097,7 @@ class OrdemDeServicoMenu {
   }) async {
     if (itens.isEmpty) {
       print('\nNenhuma OS encontrada.');
+      pausar();
       return;
     }
     var pagina = 0;
@@ -1105,6 +1129,7 @@ class OrdemDeServicoMenu {
           final achada = itens.where((o) => o.id == id);
           if (achada.isEmpty) {
             print('ID não encontrado nesta lista.');
+            pausar();
           } else {
             await detalhes(achada.first);
           }
@@ -1114,6 +1139,7 @@ class OrdemDeServicoMenu {
             pagina++;
           } else {
             print('Você já está na última página.');
+            pausar();
           }
           break;
         case '3':
@@ -1121,6 +1147,7 @@ class OrdemDeServicoMenu {
             pagina--;
           } else {
             print('Você já está na primeira página.');
+            pausar();
           }
           break;
         case '0':
@@ -1245,6 +1272,7 @@ class OrdemDeServicoMenu {
         case '5':
           if (os.patrimonioId == null) {
             print('Esta OS não possui patrimônio específico.');
+            pausar();
           } else {
             await abrirPatrimonio(os.patrimonioId!);
           }
@@ -1264,6 +1292,7 @@ class OrdemDeServicoMenu {
   Future<void> editar(OrdemDeServico os) async {
     if (!_podeEditar(os)) {
       print('Você não tem permissão para editar esta OS.');
+      pausar();
       return;
     }
     final d = _RascunhoOs.de(os);
@@ -1275,6 +1304,7 @@ class OrdemDeServicoMenu {
     if (atualizada == null) return;
     await dao.atualizar(atualizada);
     print('Ordem de serviço atualizada!');
+    pausar();
   }
 
   // ===========================================================
@@ -1284,6 +1314,7 @@ class OrdemDeServicoMenu {
   Future<void> alterarStatus(OrdemDeServico os) async {
     if (!_podeAlterarStatus(os)) {
       print('Apenas o executor ou um administrador pode alterar o status.');
+      pausar();
       return;
     }
 
@@ -1299,11 +1330,13 @@ class OrdemDeServicoMenu {
 
     if (novo == os.status) {
       print('A OS já está com esse status.');
+      pausar();
       return;
     }
     if (os.tipoManutencao == OrdemDeServico.preventiva &&
         novo == OrdemDeServico.statusConcluida) {
       print('Preventiva não é concluída: ela se renova.');
+      pausar();
       return;
     }
     if (!_confirmar('Deseja realmente alterar o status para "$novo"?')) return;
@@ -1329,10 +1362,12 @@ class OrdemDeServicoMenu {
       atualizada.validar();
     } on ArgumentError catch (e) {
       print('Não foi possível alterar o status: ${e.message}');
+      pausar();
       return;
     }
     await dao.atualizar(atualizada);
     print('Status atualizado para "$novo"!');
+    pausar();
   }
 
   // ===========================================================
@@ -1342,6 +1377,7 @@ class OrdemDeServicoMenu {
   Future<void> alterarExecutor(OrdemDeServico os) async {
     if (!_podeAlterarExecutor) {
       print('Apenas administradores podem alterar o executor.');
+      pausar();
       return;
     }
     final e = await _selecionarExecutor();
@@ -1350,6 +1386,7 @@ class OrdemDeServicoMenu {
     if (!_confirmar('Deseja alterar o executor para "${e.nome}"?')) return;
     await dao.atualizar(os.copyWith(executorId: e.id));
     print('Executor atualizado!');
+    pausar();
   }
 
   // ===========================================================
@@ -1359,6 +1396,7 @@ class OrdemDeServicoMenu {
   Future<void> excluirPorId() async {
     if (!isAdmin) {
       print('Acesso negado: somente administradores podem excluir OS.');
+      pausar();
       return;
     }
 
@@ -1369,6 +1407,7 @@ class OrdemDeServicoMenu {
     final os = await dao.buscarPorId(id);
     if (os == null) {
       print('Nenhuma OS encontrada com esse número.');
+      pausar();
       return;
     }
 
@@ -1384,5 +1423,6 @@ class OrdemDeServicoMenu {
       print('Existem registros relacionados (ex.: materiais utilizados).');
       print('Considere cancelá-la para preservar o histórico.');
     }
+    pausar();
   }
 }

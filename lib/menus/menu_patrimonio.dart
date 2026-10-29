@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/patrimonio.dart';
 import '../models/localizacao.dart';
 import '../dao/patrimonio_dao.dart';
@@ -7,13 +9,13 @@ import '../dao/localizacao_dao.dart';
 import '../dao/ordem_servico_dao.dart';
 
 class MenuPatrimonio {
-
   static Future<int?> Function() cadastrarLocalizacao = () async => null;
   static Future<void> Function(int patrimonioId) consultarOrdensPorPatrimonio =
       (_) async {};
 
   static Future<void> mostrarPorLocalizacao(Localizacao loc) =>
       _navegarPorLocalizacao(loc);
+
   // ===========================================================================
   // 3.1 MENU DE PATRIMÔNIO
   // ===========================================================================
@@ -162,11 +164,11 @@ class MenuPatrimonio {
   /// Retorna o id da localização, ou null se o usuário cancelar.
   static Future<int?> _escolherLocalizacaoNoCadastro() async {
     while (true) {
-      print('\nLocalização:\n');
+      _cabecalho('Localização do Patrimônio');
       print('[1] Selecionar localização cadastrada');
       print('[2] Cadastrar nova localização');
       print('[0] Cancelar');
-      final op = _ler('>');
+      final op = _ler('\nSelecione uma opção:');
 
       switch (op) {
         case '1':
@@ -423,6 +425,7 @@ class MenuPatrimonio {
       final lista = await PatrimonioDao().buscarPorLocalizacao(loc.id!);
 
       if (lista.isEmpty) {
+        limparTela();
         print('\n=================================');
         print('Nenhum patrimônio cadastrado nesta');
         print('localização.');
@@ -464,7 +467,6 @@ class MenuPatrimonio {
       _ler('Pressione ENTER para continuar...');
       return;
     }
-    print('\nPatrimônio encontrado: ${p.nome}');
     await _editarPatrimonio(p);
   }
 
@@ -474,7 +476,8 @@ class MenuPatrimonio {
     var atual = inicial;
 
     while (true) {
-      print('\nPatrimônio: ${atual.nome}\n');
+      _cabecalho('Editar Patrimônio');
+      print('Patrimônio: ${atual.nome}\n');
       print('1. Nome');
       print('2. Descrição');
       print('3. Valor');
@@ -525,6 +528,7 @@ class MenuPatrimonio {
       } else {
         print('\nAlteração descartada.');
       }
+      pausar();
     }
   }
 
@@ -542,6 +546,7 @@ class MenuPatrimonio {
     } else {
       print('\nAlteração descartada.');
     }
+    pausar();
   }
 
   // ===========================================================================
@@ -603,7 +608,7 @@ class MenuPatrimonio {
       if (n != null && n >= 1 && n <= Patrimonio.estados.length) {
         return Patrimonio.estados[n - 1];
       }
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a lista é repetida logo abaixo
     }
   }
 
@@ -670,7 +675,7 @@ class MenuPatrimonio {
       final r = _ler('>').toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -680,7 +685,9 @@ class MenuPatrimonio {
     return (stdin.readLineSync() ?? '').trim();
   }
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   static void _cabecalho(String titulo) {
+    limparTela();
     const largura = 33;
     final pad = ((largura - titulo.length) / 2).floor().clamp(0, largura);
     print('\n=================================');
@@ -688,7 +695,12 @@ class MenuPatrimonio {
     print('=================================\n');
   }
 
-  static void _opcaoInvalida() => print('\nOpção inválida. Tente novamente.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  static void _opcaoInvalida({bool pausa = true}) {
+    print('\nOpção inválida. Tente novamente.');
+    if (pausa) pausar();
+  }
 }
 
 /// Dados temporários usados durante o cadastro (permite editar antes de salvar).

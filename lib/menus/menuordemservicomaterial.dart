@@ -5,6 +5,7 @@ import '../dao/material_dao.dart';
 import '../dao/ordem_servico_material_dao.dart';
 import '../models/ordemdeservico.dart';
 import '../models/ordemdeservicomaterial.dart';
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
 
 class OrdemServicoMaterialMenu {
   final OrdemDeServicoMaterialDao dao;
@@ -41,7 +42,9 @@ class OrdemServicoMaterialMenu {
   // HELPERS
   // ===========================================================
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   void _cabecalho(String titulo) {
+    limparTela();
     const linha = '=================================';
     print('\n$linha');
     print(titulo.padLeft((linha.length + titulo.length) ~/ 2));
@@ -54,8 +57,12 @@ class OrdemServicoMaterialMenu {
     return stdin.readLineSync()?.trim() ?? '';
   }
 
-  void _opcaoInvalida() =>
-      print('Opção inválida! Selecione uma das opções disponíveis.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  void _opcaoInvalida({bool pausa = true}) {
+    print('Opção inválida! Selecione uma das opções disponíveis.');
+    if (pausa) pausar();
+  }
 
   bool _confirmar(String pergunta) {
     while (true) {
@@ -64,7 +71,7 @@ class OrdemServicoMaterialMenu {
       final r = _ler().toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -99,10 +106,12 @@ class OrdemServicoMaterialMenu {
   Future<void> registrarMateriais(OrdemDeServico os) async {
     if (_statusBloqueiaRegistro(os.status)) {
       print('Não é possível registrar materiais em uma OS ${os.status}.');
+      pausar();
       return;
     }
     if (!_podeRegistrar(os)) {
       print('Apenas o executor ou um administrador pode registrar materiais.');
+      pausar();
       return;
     }
 
@@ -148,7 +157,10 @@ class OrdemServicoMaterialMenu {
     );
     if (id == null || id == 0) return null;
     final m = await materialDao.buscarPorId(id);
-    if (m == null) print('Nenhum material encontrado com esse código.');
+    if (m == null) {
+      print('Nenhum material encontrado com esse código.');
+      pausar();
+    }
     return m;
   }
 
@@ -159,6 +171,7 @@ class OrdemServicoMaterialMenu {
     final resultados = await materialDao.buscarPorNome(nome);
     if (resultados.isEmpty) {
       print('Nenhum material encontrado com esse nome.');
+      pausar();
       return null;
     }
 
@@ -189,6 +202,7 @@ class OrdemServicoMaterialMenu {
 
     if (m.quantidade <= 0) {
       print('Este material está sem estoque.');
+      pausar();
       return false;
     }
 
@@ -196,6 +210,7 @@ class OrdemServicoMaterialMenu {
     if (qtd == null) return false;
     if (qtd > m.quantidade) {
       print('Estoque insuficiente! Disponível: ${_qtd(m.quantidade)}.');
+      pausar();
       return false;
     }
     final novoEstoque = m.quantidade - qtd;
@@ -216,6 +231,7 @@ class OrdemServicoMaterialMenu {
             await dao.registrarUso(os.id!, m.id!, qtd);
           } on Exception catch (e) {
             print('Não foi possível registrar: ${e.toString().replaceFirst('Exception: ', '')}');
+            pausar();
             return false;
           }
           print('Material registrado com sucesso!');
@@ -224,12 +240,14 @@ class OrdemServicoMaterialMenu {
           } else if (novoEstoque <= limiteEstoqueBaixo) {
             print('Atenção: estoque baixo (${_qtd(novoEstoque)}).');
           }
+          // Sem pausar aqui: logo em seguida aparece "Deseja registrar outro material?"
           return true;
         case '0':
           print('Registro cancelado.');
+          pausar();
           return false;
         default:
-          _opcaoInvalida();
+          _opcaoInvalida(pausa: false); // volta a ler o mesmo menu, sem redesenhar
       }
     }
   }
@@ -238,46 +256,51 @@ class OrdemServicoMaterialMenu {
     final usos = await dao.listarPorOs(os.id!);
     if (usos.isEmpty) {
       print('\nNenhum material registrado nesta OS.');
+      pausar();
       return;
     }
     _cabecalho('Materiais da OS #${os.id}');
     _imprimirTabela(usos);
     print('\nTotal de registros: ${usos.length}');
+    pausar(); // sem isso a tabela sumiria na hora
   }
 
   Future<void> _remover(OrdemDeServico os) async {
-  final usos = await dao.listarPorOs(os.id!);
-  if (usos.isEmpty) {
-    print('\nNenhum material registrado nesta OS.');
-    return;
-  }
-  _cabecalho('Remover Material Registrado');
-  _imprimirTabela(usos);
+    final usos = await dao.listarPorOs(os.id!);
+    if (usos.isEmpty) {
+      print('\nNenhum material registrado nesta OS.');
+      pausar();
+      return;
+    }
+    _cabecalho('Remover Material Registrado');
+    _imprimirTabela(usos);
 
-  final id = int.tryParse(_ler('\nDigite o ID do registro (0 para voltar):'));
-  if (id == null || id == 0) return;
-  final achados = usos.where((u) => u.id == id);
-  if (achados.isEmpty) {
-    print('Registro não encontrado nesta OS.');
-    return;
-  }
+    final id = int.tryParse(_ler('\nDigite o ID do registro (0 para voltar):'));
+    if (id == null || id == 0) return;
+    final achados = usos.where((u) => u.id == id);
+    if (achados.isEmpty) {
+      print('Registro não encontrado nesta OS.');
+      pausar();
+      return;
+    }
 
-  final u = achados.first;
-  print('\nMaterial: ${u.materialNome}');
-  print('Quantidade: ${_qtd(u.quantidade)}');
+    final u = achados.first;
+    print('\nMaterial: ${u.materialNome}');
+    print('Quantidade: ${_qtd(u.quantidade)}');
 
-  if (!_confirmar('Deseja remover este registro?\n'
-      '(a quantidade será devolvida ao estoque)')) {
-    return;
-  }
+    if (!_confirmar('Deseja remover este registro?\n'
+        '(a quantidade será devolvida ao estoque)')) {
+      return;
+    }
 
-  try {
-    await dao.removerUso(u.id);
-    print('Registro removido e estoque atualizado!');
-  } on Exception catch (e) {
-    print('Não foi possível remover: ${e.toString().replaceFirst('Exception: ', '')}');
+    try {
+      await dao.removerUso(u.id);
+      print('Registro removido e estoque atualizado!');
+    } on Exception catch (e) {
+      print('Não foi possível remover: ${e.toString().replaceFirst('Exception: ', '')}');
+    }
+    pausar();
   }
-}
 
   // ===========================================================
   // HISTÓRICO DE UTILIZAÇÃO (callbacks do MaterialMenu)
@@ -348,6 +371,7 @@ class OrdemServicoMaterialMenu {
   }) async {
     if (usos.isEmpty) {
       print('\nNenhum registro de utilização encontrado.');
+      pausar();
       return;
     }
 
@@ -370,19 +394,21 @@ class OrdemServicoMaterialMenu {
       print('[0] Voltar\n');
 
       switch (_ler('Selecione uma opção:')) {
-          case '1':
-            final osId = int.tryParse(_ler('Digite o número da OS:'));
-            if (osId == null || !usos.any((u) => u.ordemServicoId == osId)) {
-              print('OS não encontrada neste histórico.');
-            } else {
-              await abrirOs(osId);
-            }
-            break;
+        case '1':
+          final osId = int.tryParse(_ler('Digite o número da OS:'));
+          if (osId == null || !usos.any((u) => u.ordemServicoId == osId)) {
+            print('OS não encontrada neste histórico.');
+            pausar();
+          } else {
+            await abrirOs(osId);
+          }
+          break;
         case '2':
           if (pagina < totalPaginas - 1) {
             pagina++;
           } else {
             print('Você já está na última página.');
+            pausar();
           }
           break;
         case '3':
@@ -390,6 +416,7 @@ class OrdemServicoMaterialMenu {
             pagina--;
           } else {
             print('Você já está na primeira página.');
+            pausar();
           }
           break;
         case '0':

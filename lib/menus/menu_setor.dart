@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/setor.dart';
 import '../dao/setor_dao.dart';
 import '../dao/usuario_dao.dart';
-
 
 class MenuSetor {
   // ===========================================================================
@@ -224,7 +225,8 @@ class MenuSetor {
     var atual = setor;
 
     while (true) {
-      print('\nSetor: ${atual.nome}\n');
+      _cabecalho('Editar Setor');
+      print('Setor: ${atual.nome}\n');
       print('1. Nome');
       print('2. Descrição');
       print('0. Voltar');
@@ -250,6 +252,7 @@ class MenuSetor {
       } else {
         print('\nAlteração descartada.');
       }
+      pausar();
     }
   }
 
@@ -330,7 +333,7 @@ class MenuSetor {
       final n = int.tryParse(_ler('\nSelecione um setor:'));
       if (n == 0) return null;
       if (n != null && n >= 1 && n <= setores.length) return setores[n - 1];
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a lista é repetida logo abaixo
     }
   }
 
@@ -355,7 +358,7 @@ class MenuSetor {
       final r = _ler('>').toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -365,7 +368,9 @@ class MenuSetor {
     return (stdin.readLineSync() ?? '').trim();
   }
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   static void _cabecalho(String titulo) {
+    limparTela();
     const largura = 33;
     final pad = ((largura - titulo.length) / 2).floor().clamp(0, largura);
     print('\n=================================');
@@ -373,5 +378,10 @@ class MenuSetor {
     print('=================================\n');
   }
 
-  static void _opcaoInvalida() => print('\nOpção inválida. Tente novamente.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  static void _opcaoInvalida({bool pausa = true}) {
+    print('\nOpção inválida. Tente novamente.');
+    if (pausa) pausar();
+  }
 }

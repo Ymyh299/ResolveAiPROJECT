@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/material.dart';
 import '../dao/material_dao.dart';
 
@@ -37,7 +39,9 @@ class MaterialMenu {
   // HELPERS
   // ===========================================================
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   void _cabecalho(String titulo) {
+    limparTela();
     const linha = '=================================';
     print('\n$linha');
     print(titulo.padLeft((linha.length + titulo.length) ~/ 2));
@@ -50,8 +54,12 @@ class MaterialMenu {
     return stdin.readLineSync()?.trim() ?? '';
   }
 
-  void _opcaoInvalida() =>
-      print('Opção inválida! Selecione uma das opções disponíveis.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  void _opcaoInvalida({bool pausa = true}) {
+    print('Opção inválida! Selecione uma das opções disponíveis.');
+    if (pausa) pausar();
+  }
 
   bool _confirmar(String pergunta) {
     while (true) {
@@ -60,7 +68,7 @@ class MaterialMenu {
       final r = _ler().toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -112,11 +120,17 @@ class MaterialMenu {
   Future<Material?> _pedirMaterialPorCodigo() async {
     final id = _lerCodigo('Digite o código do material (0 para voltar):');
     if (id == null || id == 0) {
-      if (id == null) print('Código inválido.');
+      if (id == null) {
+        print('Código inválido.');
+        pausar();
+      }
       return null;
     }
     final m = await dao.buscarPorId(id);
-    if (m == null) print('Nenhum material encontrado com esse código.');
+    if (m == null) {
+      print('Nenhum material encontrado com esse código.');
+      pausar();
+    }
     return m;
   }
 
@@ -324,6 +338,7 @@ class MaterialMenu {
     final resultados = await dao.buscarPorNome(nome);
     if (resultados.isEmpty) {
       print('Nenhum material encontrado com esse nome.');
+      pausar();
       return;
     }
     final m = await _escolherDaLista('Resultados da Busca', resultados);
@@ -334,6 +349,7 @@ class MaterialMenu {
     final itens = await dao.listarEstoqueBaixo(limiteEstoqueBaixo);
     if (itens.isEmpty) {
       print('Nenhum material com estoque baixo.');
+      pausar();
       return;
     }
     final m = await _escolherDaLista('Estoque Baixo', itens);
@@ -344,6 +360,7 @@ class MaterialMenu {
     final itens = await dao.listarSemEstoque();
     if (itens.isEmpty) {
       print('Nenhum material sem estoque.');
+      pausar();
       return;
     }
     final m = await _escolherDaLista('Materiais Sem Estoque', itens);
@@ -358,6 +375,7 @@ class MaterialMenu {
     final todos = await dao.listarTodos();
     if (todos.isEmpty) {
       print('Nenhum material cadastrado.');
+      pausar();
       return;
     }
     final m = await _escolherDaLista('Listar Materiais', todos);
@@ -394,12 +412,14 @@ class MaterialMenu {
           final achado = visiveis.where((m) => m.id == id);
           if (achado.isNotEmpty) return achado.first;
           print('Código não encontrado nesta página.');
+          pausar();
           break;
         case '2':
           if (pagina < totalPaginas - 1) {
             pagina++;
           } else {
             print('Você já está na última página.');
+            pausar();
           }
           break;
         case '3':
@@ -407,6 +427,7 @@ class MaterialMenu {
             pagina--;
           } else {
             print('Você já está na primeira página.');
+            pausar();
           }
           break;
         case '0':
@@ -503,6 +524,7 @@ class MaterialMenu {
       if (alterado != null && _confirmar('Deseja salvar a alteração?')) {
         await dao.atualizar(alterado);
         print('Informação atualizada!');
+        pausar();
       }
     }
   }
@@ -546,12 +568,14 @@ class MaterialMenu {
             dataCompra: data,
           );
           print('Entrada registrada com sucesso!');
+          pausar();
           return;
         case '0':
           print('Entrada cancelada.');
+          pausar();
           return;
         default:
-          _opcaoInvalida();
+          _opcaoInvalida(pausa: false); // volta a ler o mesmo menu
       }
     }
   }
@@ -611,6 +635,7 @@ class MaterialMenu {
           final idOs = _lerCodigo('Digite o número da OS (0 para voltar):');
           if (idOs == null) {
             print('Número inválido.');
+            pausar();
           } else if (idOs != 0) {
             await historicoPorOs(idOs);
           }
@@ -620,6 +645,7 @@ class MaterialMenu {
           final fim = _lerData('Data final (DD/MM/AAAA):');
           if (fim.isBefore(inicio)) {
             print('A data final não pode ser anterior à inicial.');
+            pausar();
           } else {
             await historicoPorPeriodo(inicio, fim);
           }

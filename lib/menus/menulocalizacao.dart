@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/localizacao.dart';
 import '../dao/localizacao_dao.dart';
 
@@ -18,7 +20,9 @@ class LocalizacaoMenu {
   // HELPERS
   // ===========================================================
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   void _cabecalho(String titulo) {
+    limparTela();
     const linha = '=================================';
     print('\n$linha');
     print(titulo.padLeft((linha.length + titulo.length) ~/ 2));
@@ -31,8 +35,12 @@ class LocalizacaoMenu {
     return stdin.readLineSync()?.trim() ?? '';
   }
 
-  void _opcaoInvalida() =>
-      print('Opção inválida! Selecione uma das opções disponíveis.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  void _opcaoInvalida({bool pausa = true}) {
+    print('Opção inválida! Selecione uma das opções disponíveis.');
+    if (pausa) pausar();
+  }
 
   /// Lê um texto obrigatório. Retorna null se o usuário digitar 0 (cancelar).
   String? _lerObrigatorio(String prompt) {
@@ -52,7 +60,7 @@ class LocalizacaoMenu {
       final r = _ler().toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -283,6 +291,7 @@ class LocalizacaoMenu {
     final loc = id == null ? null : await dao.buscarPorId(id);
     if (loc == null) {
       print('Nenhuma localização encontrada com esse ID.');
+      pausar();
       return;
     }
     await detalhes(loc);
@@ -294,6 +303,7 @@ class LocalizacaoMenu {
     final resultados = await dao.buscarPorNome(nome);
     if (resultados.isEmpty) {
       print('Nenhuma localização encontrada com esse nome.');
+      pausar();
       return;
     }
     final escolhida = await _escolherDaLista('Resultados', resultados);
@@ -335,6 +345,7 @@ class LocalizacaoMenu {
     final todas = await dao.listarTodas();
     if (todas.isEmpty) {
       print('Nenhuma localização cadastrada.');
+      pausar();
       return;
     }
     final escolhida = await _escolherDaLista('Listar Localizações', todas);
@@ -371,12 +382,14 @@ class LocalizacaoMenu {
           final achada = visiveis.where((l) => l.id == id);
           if (achada.isNotEmpty) return achada.first;
           print('ID não encontrado nesta página.');
+          pausar();
           break;
         case '2':
           if (pagina < totalPaginas - 1) {
             pagina++;
           } else {
             print('Você já está na última página.');
+            pausar();
           }
           break;
         case '3':
@@ -384,6 +397,7 @@ class LocalizacaoMenu {
             pagina--;
           } else {
             print('Você já está na primeira página.');
+            pausar();
           }
           break;
         case '0':
@@ -452,6 +466,7 @@ class LocalizacaoMenu {
     final loc = id == null ? null : await dao.buscarPorId(id);
     if (loc == null) {
       print('Nenhuma localização encontrada com esse ID.');
+      pausar();
       return;
     }
     await atualizar(loc);
@@ -477,6 +492,7 @@ class LocalizacaoMenu {
           if (_confirmar('Deseja salvar a alteração?')) {
             await dao.atualizar(atual.copyWith(nome: novoNome));
             print('Informação atualizada!');
+            pausar();
           }
           break;
         case '2':
@@ -489,6 +505,7 @@ class LocalizacaoMenu {
           if (_confirmar('Deseja salvar a alteração?')) {
             await dao.atualizar(atual.copyWith(paiId: novoPai.id));
             print('Informação atualizada!');
+            pausar();
           }
           break;
         case '0':
@@ -509,6 +526,7 @@ class LocalizacaoMenu {
     final loc = id == null ? null : await dao.buscarPorId(id);
     if (loc == null) {
       print('Nenhuma localização encontrada com esse ID.');
+      pausar();
       return;
     }
     await excluir(loc);
@@ -545,20 +563,20 @@ class LocalizacaoMenu {
   }
 
   Future<int?> cadastrarERetornarId() async {
-  _cabecalho('Cadastrar Localização');
-  print('Digite [0] para cancelar\n');
+    _cabecalho('Cadastrar Localização');
+    print('Digite [0] para cancelar\n');
 
-  final nome = _lerObrigatorio('Nome da localização:');
-  if (nome == null) return null;
+    final nome = _lerObrigatorio('Nome da localização:');
+    if (nome == null) return null;
 
-  int? paiId;
-  if (_confirmar('Esta localização possui uma localização\nsuperior?')) {
-    final pai = await selecionarPai();
-    if (pai == null) return null;
-    paiId = pai.id;
+    int? paiId;
+    if (_confirmar('Esta localização possui uma localização\nsuperior?')) {
+      final pai = await selecionarPai();
+      if (pai == null) return null;
+      paiId = pai.id;
+    }
+
+    final cadastrada = await _resumoCadastro(nome, paiId);
+    return cadastrada?.id;
   }
-
-  final cadastrada = await _resumoCadastro(nome, paiId);
-  return cadastrada?.id;
-}
 }

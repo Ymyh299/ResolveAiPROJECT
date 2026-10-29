@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:projeto_resolveai/utils/utils.dart'; // limparTela() e pausar()
+
 import '../models/usuario.dart';
 import '../dao/usuario_dao.dart';
 import '../dao/setor_dao.dart';
@@ -236,6 +238,7 @@ class MenuUsuario {
             pagina++;
           } else {
             print('Esta é a última página.');
+            pausar();
           }
         case '3':
           if (pagina > 0) pagina--;
@@ -265,7 +268,8 @@ class MenuUsuario {
     }
 
     while (true) {
-      print('\nUsuário: ${usuario!.nome}\n');
+      _cabecalho('Atualizar Usuário');
+      print('Usuário: ${usuario!.nome}\n');
       print('1. Nome');
       print('2. Telefone');
       print('3. E-mail');
@@ -313,6 +317,7 @@ class MenuUsuario {
       } else {
         print('\nAlteração descartada.');
       }
+      pausar();
     }
   }
 
@@ -416,7 +421,7 @@ class MenuUsuario {
       }
       final n = int.tryParse(_ler('>'));
       if (n != null && n >= 1 && n <= setores.length) return setores[n - 1];
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a lista é repetida logo abaixo
     }
   }
 
@@ -428,7 +433,7 @@ class MenuUsuario {
       }
       final n = int.tryParse(_ler('>'));
       if (n == 1 || n == 2) return TipoUsuario.fromCodigo(n!);
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a lista é repetida logo abaixo
     }
   }
 
@@ -441,7 +446,7 @@ class MenuUsuario {
       final r = _ler('>').toUpperCase();
       if (r == 'S') return true;
       if (r == 'N') return false;
-      _opcaoInvalida();
+      _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
     }
   }
 
@@ -451,7 +456,9 @@ class MenuUsuario {
     return (stdin.readLineSync() ?? '').trim();
   }
 
+  /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   static void _cabecalho(String titulo) {
+    limparTela();
     const largura = 33;
     final pad = ((largura - titulo.length) / 2).floor().clamp(0, largura);
     print('\n=================================');
@@ -459,7 +466,12 @@ class MenuUsuario {
     print('=================================\n');
   }
 
-  static void _opcaoInvalida() => print('\nOpção inválida. Tente novamente.');
+  /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
+  /// quando a próxima tela limpar o terminal.
+  static void _opcaoInvalida({bool pausa = true}) {
+    print('\nOpção inválida. Tente novamente.');
+    if (pausa) pausar();
+  }
 }
 
 /// Dados temporários usados durante o cadastro (permite editar antes de salvar).
