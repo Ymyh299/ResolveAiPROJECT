@@ -11,26 +11,28 @@ class MaterialDao {
 
   Future<Material?> buscarPorId(int id) async {
     final r = await Conexao.consultar(
-        'SELECT * FROM MATERIAL WHERE idMATERIAL = :chave', {'chave': id});
+      'SELECT idMATERIAL, nome, quantidade, valor_material, data_compra FROM MATERIAL WHERE idMATERIAL = :chave',
+      {'chave': id},
+    );
     return r.isEmpty ? null : Material.fromMap(r.first);
   }
 
   Future<List<Material>> buscarPorNome(String nome) => _lista(
-      'SELECT * FROM MATERIAL WHERE nome_material LIKE :nome ORDER BY nome_material',
+      'SELECT idMATERIAL, nome, quantidade, valor_material, data_compra FROM MATERIAL WHERE nome LIKE :nome ORDER BY nome',
       {'nome': '%$nome%'});
 
   Future<List<Material>> listarTodos() =>
-      _lista('SELECT * FROM MATERIAL ORDER BY nome_material');
+      _lista('SELECT idMATERIAL, nome, quantidade, valor_material, data_compra FROM MATERIAL ORDER BY nome');
 
   // Estoque baixo: acima de zero e até o limite (zerados ficam em listarSemEstoque)
   Future<List<Material>> listarEstoqueBaixo(double limite) => _lista(
-      '''SELECT * FROM MATERIAL
-          WHERE quantidade_estoque > 0 AND quantidade_estoque <= :limite
-          ORDER BY quantidade_estoque''',
+      '''SELECT idMATERIAL, nome, quantidade, valor_material, data_compra FROM MATERIAL
+          WHERE quantidade > 0 AND quantidade <= :limite
+          ORDER BY quantidade''',
       {'limite': limite});
 
   Future<List<Material>> listarSemEstoque() => _lista(
-      'SELECT * FROM MATERIAL WHERE quantidade_estoque <= 0 ORDER BY nome_material');
+      'SELECT idMATERIAL, nome, quantidade, valor_material, data_compra FROM MATERIAL WHERE quantidade <= 0 ORDER BY nome');
 
   // Não mexe no estoque: quem altera a quantidade é registrarEntrada e o uso em OS
   Future<bool> atualizar(Material m) => Conexao.atualizar(
@@ -38,8 +40,8 @@ class MaterialDao {
         'idMATERIAL',
         m.id!,
         {
-          'nome_material': m.nome,
-          'valor': m.valorMaterial,
+          'nome': m.nome,
+          'valor_material': m.valorMaterial,
           'data_compra': gravarData(m.dataCompra),
         },
       );
@@ -53,8 +55,8 @@ class MaterialDao {
   }) async =>
       await Conexao.executar(
         '''UPDATE MATERIAL
-            SET quantidade_estoque = quantidade_estoque + :qtd,
-                valor = :valor,
+            SET quantidade = quantidade + :qtd,
+                valor_material = :valor,
                 data_compra = :data
             WHERE idMATERIAL = :chave''',
         {

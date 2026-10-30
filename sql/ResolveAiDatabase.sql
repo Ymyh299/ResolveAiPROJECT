@@ -46,13 +46,13 @@ CREATE TABLE PATRIMONIO (
 
 CREATE TABLE MATERIAL (
     idMATERIAL INT NOT NULL AUTO_INCREMENT,
-    nome_material VARCHAR(60) NOT NULL,
-    quantidade_estoque DECIMAL(10,2) NOT NULL,
+    nome VARCHAR(60) NOT NULL,
+    quantidade DECIMAL(10,2) NOT NULL,
     data_compra DATE,
-    valor DECIMAL(12,2) NOT NULL,
+    valor_material DECIMAL(12,2) NOT NULL,
     PRIMARY KEY (idMATERIAL),
-    CHECK (quantidade_estoque >= 0),
-    CHECK (valor >= 0)
+    CHECK (quantidade>= 0),
+    CHECK (valor_material >= 0)
 );
 
 CREATE TABLE ORDEMSERVICO (

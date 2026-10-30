@@ -14,7 +14,7 @@ class Material {
     required this.dataCompra,
   });
 
-    Material copyWith({
+  Material copyWith({
     int? id,
     String? nome,
     double? quantidade,
@@ -32,7 +32,7 @@ class Material {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'idMATERIAL': id,
       'nome': nome,
       'quantidade': quantidade,
       'valor_material': valorMaterial,
@@ -41,12 +41,18 @@ class Material {
   }
 
   factory Material.fromMap(Map<String, dynamic> map) {
+    final idRaw = map['idMATERIAL'] ?? map['id'];
+    final nomeRaw = map['nome'] ?? '';
+    final quantidadeRaw = map['quantidade'] ?? 0;
+    final valorRaw = map['valor_material'] ?? map['valor'] ?? 0;
+    final dataCompraRaw = map['data_compra'];
+
     return Material(
-      id: map['id'] as int?,
-      nome: map['nome'] as String,
-      quantidade: map['quantidade'] as double,
-      valorMaterial: (map['valor_material'] as num).toDouble(),
-      dataCompra: DateTime.parse(map['data_compra'] as String),
+      id: idRaw == null ? null : int.tryParse(idRaw.toString()),
+      nome: nomeRaw.toString(),
+      quantidade: double.tryParse(quantidadeRaw.toString()) ?? 0,
+      valorMaterial: double.tryParse(valorRaw.toString()) ?? 0,
+      dataCompra: DateTime.tryParse(dataCompraRaw?.toString() ?? '') ?? DateTime.now(),
     );
   }
 

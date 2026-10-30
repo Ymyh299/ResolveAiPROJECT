@@ -8,14 +8,14 @@ class OrdemDeServicoMaterialDao {
 
     return await conn.transactional((tx) async {
       final r = await tx.execute(
-        'SELECT quantidade_estoque, valor FROM MATERIAL WHERE idMATERIAL = :mat FOR UPDATE',
+        'SELECT quantidade, valor_material FROM MATERIAL WHERE idMATERIAL = :mat FOR UPDATE',
         {'mat': materialId},
       );
       if (r.rows.isEmpty) throw Exception('Material não encontrado');
 
       final dados = r.rows.first.typedAssoc();
-      final estoque = lerDouble(dados['quantidade_estoque'])!;
-      final valor = lerDouble(dados['valor'])!;
+      final estoque = lerDouble(dados['quantidade'])!;
+      final valor = lerDouble(dados['valor_material'])!;
       if (estoque < quantidade) {
         throw Exception('Estoque insuficiente (disponível: $estoque)');
       }
@@ -28,7 +28,7 @@ class OrdemDeServicoMaterialDao {
       );
 
       await tx.execute(
-        'UPDATE MATERIAL SET quantidade_estoque = quantidade_estoque - :qtd WHERE idMATERIAL = :mat',
+        'UPDATE MATERIAL SET quantidade = quantidade - :qtd WHERE idMATERIAL = :mat',
         {'qtd': quantidade, 'mat': materialId},
       );
 
@@ -52,7 +52,7 @@ class OrdemDeServicoMaterialDao {
       final quantidade = lerDouble(dados['quantidade_usada'])!;
 
       await tx.execute(
-        'UPDATE MATERIAL SET quantidade_estoque = quantidade_estoque + :qtd WHERE idMATERIAL = :mat',
+        'UPDATE MATERIAL SET quantidade = quantidade + :qtd WHERE idMATERIAL = :mat',
         {'qtd': quantidade, 'mat': materialId},
       );
       await tx.execute(
@@ -92,7 +92,7 @@ class OrdemDeServicoMaterialDao {
       String where, Map<String, dynamic> params) async {
     final r = await Conexao.consultar(
       '''SELECT i.idITEM, i.ORDEMSERVICO_idORDEMSERVICO, i.MATERIAL_idMATERIAL,
-                m.nome_material, i.quantidade_usada, i.valor_unitario, i.data_uso
+                m.nome, i.quantidade_usada, i.valor_unitario, i.data_uso
           FROM ORDEMSERVICO_has_MATERIAL i
           JOIN MATERIAL m ON m.idMATERIAL = i.MATERIAL_idMATERIAL
           $where

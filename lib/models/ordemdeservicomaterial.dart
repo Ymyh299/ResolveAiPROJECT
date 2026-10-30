@@ -61,7 +61,7 @@ class UsoMaterialDetalhe {
       id: map['idITEM'] as int,
       ordemServicoId: map['ORDEMSERVICO_idORDEMSERVICO'] as int,
       materialId: map['MATERIAL_idMATERIAL'] as int,
-      materialNome: map['nome_material'] as String,
+      materialNome: map['nome'] as String,
       quantidade: lerDouble(map['quantidade_usada'])!,
       valorUnitario: lerDouble(map['valor_unitario'])!,
       dataUso: lerData(map['data_uso'])!,
