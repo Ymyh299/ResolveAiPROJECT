@@ -6,7 +6,6 @@ import 'package:projeto_resolveai/database/conexao.dart';
 import 'package:projeto_resolveai/models/usuario.dart';
 import 'package:projeto_resolveai/models/setor.dart';
 import 'package:projeto_resolveai/models/sessao.dart';
-
 import 'package:projeto_resolveai/dao/usuario_dao.dart';
 import 'package:projeto_resolveai/dao/setor_dao.dart';
 import 'package:projeto_resolveai/dao/localizacao_dao.dart';
@@ -14,8 +13,6 @@ import 'package:projeto_resolveai/dao/material_dao.dart';
 import 'package:projeto_resolveai/dao/ordem_servico_dao.dart';
 import 'package:projeto_resolveai/dao/ordem_servico_material_dao.dart';
 import 'package:projeto_resolveai/dao/os_apoio_dao.dart';
-
-// ATENÇÃO: ajuste o nome da pasta "menus" se a sua for diferente.
 import 'package:projeto_resolveai/menus/menu_setor.dart';
 import 'package:projeto_resolveai/menus/menuusuario.dart';
 import 'package:projeto_resolveai/menus/menu_patrimonio.dart';
@@ -23,15 +20,12 @@ import 'package:projeto_resolveai/menus/menulocalizacao.dart';
 import 'package:projeto_resolveai/menus/menumaterial.dart';
 import 'package:projeto_resolveai/menus/menuordemservico.dart';
 import 'package:projeto_resolveai/menus/menuordemservicomaterial.dart';
-
-// limparTela() e pausar() agora ficam em um arquivo só, usado por todos os menus.
 import 'package:projeto_resolveai/utils/utils.dart';
 
-/// Estoque menor ou igual a este valor é considerado "baixo".
+
 const double limiteEstoqueBaixo = 10;
 
-/// Setores e Usuários só aparecem na Home para administradores.
-/// Para liberar para todos, troque para false.
+
 const bool setoresEUsuariosSomenteAdmin = true;
 
 // =============================================================================
@@ -39,7 +33,7 @@ const bool setoresEUsuariosSomenteAdmin = true;
 // =============================================================================
 
 Future<void> main() async {
-  _cabecalho('Resolve Aí'); // o _cabecalho já limpa a tela
+  _cabecalho('Resolve Aí');
   print('Iniciando o sistema...');
 
   if (!await _prepararBanco()) exit(1);
@@ -104,9 +98,6 @@ Future<bool> _prepararBanco() async {
 // =============================================================================
 // PRIMEIRO ACESSO (nenhum usuário cadastrado)
 // =============================================================================
-
-/// Sem nenhum usuário ninguém consegue logar, então o primeiro administrador
-/// é criado aqui. Se já existir algum usuário, não faz nada.
 Future<void> _primeiroAcesso() async {
   final usuarioDao = UsuarioDao();
   if ((await usuarioDao.listar(limite: 1)).isNotEmpty) return;
@@ -156,8 +147,8 @@ Future<void> _primeiroAcesso() async {
 /// Dados temporários do primeiro administrador (permite editar antes de salvar).
 class _NovoAdmin {
   String nome = '', cpf = '', telefone = '', email = '', senha = '';
-  Setor? setor; // setor já existente (ou recém-criado)
-  String setorNovo = 'Administração'; // usado quando ainda não existe setor
+  Setor? setor;
+  String setorNovo = 'Administração';
 }
 
 void _definirSetor(_NovoAdmin d, List<Setor> setores) {
@@ -240,7 +231,6 @@ Future<bool> _salvarPrimeiroAdmin(_NovoAdmin d) async {
 // LOGIN
 // =============================================================================
 
-/// Retorna o usuário autenticado, ou null se a pessoa escolheu sair.
 Future<Usuario?> _telaLogin() async {
   final dao = UsuarioDao();
 
@@ -262,7 +252,6 @@ Future<Usuario?> _telaLogin() async {
 
     try {
       final usuario = await dao.buscarPorEmail(email);
-      // Mesma mensagem para e-mail inexistente e senha errada.
       if (usuario == null || !Usuario.verificarSenha(senha, usuario.senhaHash)) {
         print('\nE-mail ou senha incorretos.');
         _ler('Pressione ENTER para tentar novamente...');
@@ -327,7 +316,7 @@ Future<void> _home(Usuario usuario) async {
         case '7':
           if (_confirmar('Deseja trocar de usuário?')) return;
         case '0':
-          MenuUsuario.encerrarSistema(); // pergunta S/N; se S, encerra o programa
+          MenuUsuario.encerrarSistema();
         default:
           _opcaoInvalida();
       }
@@ -385,15 +374,12 @@ _Menus _montarMenus(Usuario usuario) {
     usuarioId: usuario.id!,
     usuarioNome: usuario.nome,
     isAdmin: usuario.isAdmin,
-    // Detalhes da OS -> registrar materiais
     registrarMateriais: usoMenu.registrarMateriais,
-    // Detalhes da OS -> consultar patrimônio
     abrirPatrimonio: MenuPatrimonio.detalhesPatrimonio,
   );
 
   final localizacaoMenu = LocalizacaoMenu(
     localizacaoDao,
-    // Detalhes da localização -> patrimônios daquela localização
     abrirPatrimonios: MenuPatrimonio.mostrarPorLocalizacao,
   );
 
@@ -405,7 +391,6 @@ _Menus _montarMenus(Usuario usuario) {
     historicoPorPeriodo: usoMenu.historicoPorPeriodo,
   );
 
-  // O menu de patrimônio é estático: seus ganchos são ligados aqui.
   // Cadastro de patrimônio -> "cadastrar nova localização"
   MenuPatrimonio.cadastrarLocalizacao = localizacaoMenu.cadastrarERetornarId;
   // Detalhes do patrimônio -> ordens de serviço dele
@@ -537,12 +522,10 @@ bool _confirmar(String pergunta) {
     final r = _ler('>').toUpperCase();
     if (r == 'S') return true;
     if (r == 'N') return false;
-    _opcaoInvalida(pausa: false); // a pergunta é repetida logo abaixo
+    _opcaoInvalida(pausa: false);
   }
 }
 
-/// Limpa a tela e mostra o título. Como todo menu começa por aqui,
-/// é este o ponto que "separa" uma tela da outra.
 void _cabecalho(String titulo) {
   limparTela();
   const largura = 33;
@@ -552,8 +535,6 @@ void _cabecalho(String titulo) {
   print('=================================\n');
 }
 
-/// Com [pausa] = true espera um ENTER, para a mensagem não sumir
-/// quando o menu limpar a tela de novo.
 void _opcaoInvalida({bool pausa = true}) {
   print('\nOpção inválida. Tente novamente.');
   if (pausa) pausar();
