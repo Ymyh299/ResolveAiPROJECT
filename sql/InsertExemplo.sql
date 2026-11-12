@@ -46,18 +46,19 @@ INSERT INTO SETOR (nome, descricao) VALUES
 
 -- ---------------------------------------------------------------------
 -- USUARIO (ids 1-8)
--- ATENÇÃO: a senha abaixo é SHA2 de '123456'. Se o app usa bcrypt/argon2,
--- o login desses usuários não vai funcionar: troque pelo hash gerado pelo app.
+-- Senha de todos: '123456', no formato do app (salt:hash de Usuario.gerarHash).
+-- Para trocar, gere outro hash com Usuario.gerarHash('nova_senha').
+SET @senha_padrao = 'JP_E1E1LqEBSJZ320eviFA==:xL38m6OiQXfg7X-N9BNDWfZ7l4AtP_84ScTxI-nK-1M=';
 -- ---------------------------------------------------------------------
 INSERT INTO USUARIO (nome, cpf, telefone, email, senha, tipo_usuario, SETOR_idSETOR) VALUES
-('Carlos Eduardo Lima',   '111.111.111-11', '(35) 99111-1111', 'admin@resolveai.com',       SHA2('123456',256), @tu_admin,       3),
-('Marina Souza Alves',    '222.222.222-22', '(35) 99222-2222', 'marina.gestora@clube.com',  SHA2('123456',256), @tu_gestor,      1),
-('João Pedro Ribeiro',    '333.333.333-33', '(35) 99333-3333', 'joao.exec@clube.com',       SHA2('123456',256), @tu_executor,    1),
-('Rafael Mendes Costa',   '444.444.444-44', '(35) 99444-4444', 'rafael.exec@clube.com',     SHA2('123456',256), @tu_executor,    1),
-('Ana Paula Ferreira',    '555.555.555-55', '(35) 99555-5555', 'ana.limpeza@clube.com',     SHA2('123456',256), @tu_executor,    2),
-('Lucas Martins Rocha',   '666.666.666-66', '(35) 99666-6666', 'lucas.esportes@clube.com',  SHA2('123456',256), @tu_solicitante, 4),
-('Juliana Teixeira Dias', '777.777.777-77', '(35) 99777-7777', 'juliana.piscina@clube.com', SHA2('123456',256), @tu_solicitante, 5),
-('Fernanda Oliveira Reis','888.888.888-88', '(35) 99888-8888', 'fernanda.adm@clube.com',     SHA2('123456',256), @tu_solicitante, 3);
+('Carlos Eduardo Lima',   '111.111.111-11', '(35) 99111-1111', 'admin@resolveai.com',       @senha_padrao      , @tu_admin,       3),
+('Marina Souza Alves',    '222.222.222-22', '(35) 99222-2222', 'marina.gestora@clube.com',  @senha_padrao      , @tu_gestor,      1),
+('João Pedro Ribeiro',    '333.333.333-33', '(35) 99333-3333', 'joao.exec@clube.com',       @senha_padrao      , @tu_executor,    1),
+('Rafael Mendes Costa',   '444.444.444-44', '(35) 99444-4444', 'rafael.exec@clube.com',     @senha_padrao      , @tu_executor,    1),
+('Ana Paula Ferreira',    '555.555.555-55', '(35) 99555-5555', 'ana.limpeza@clube.com',     @senha_padrao      , @tu_executor,    2),
+('Lucas Martins Rocha',   '666.666.666-66', '(35) 99666-6666', 'lucas.esportes@clube.com',  @senha_padrao      , @tu_solicitante, 4),
+('Juliana Teixeira Dias', '777.777.777-77', '(35) 99777-7777', 'juliana.piscina@clube.com', @senha_padrao      , @tu_solicitante, 5),
+('Fernanda Oliveira Reis','888.888.888-88', '(35) 99888-8888', 'fernanda.adm@clube.com',     @senha_padrao      , @tu_solicitante, 3);
 
 -- ---------------------------------------------------------------------
 -- LOCALIZACAO (ids 1-10, com hierarquia pai/filho)
