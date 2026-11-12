@@ -54,6 +54,10 @@ class MaterialMenu {
     return lerLinha();
   }
 
+  // Corta textos longos para não invadir a coluna seguinte das listas
+  String _cortar(String s, int n) =>
+      s.length <= n ? s : '${s.substring(0, n - 1)}…';
+
   /// Com [pausa] = true espera um ENTER, para a mensagem não sumir
   /// quando a próxima tela limpar o terminal.
   void _opcaoInvalida({bool pausa = true}) {
@@ -397,7 +401,7 @@ class MaterialMenu {
       print('-----------------------------------------');
       for (final m in visiveis) {
         print('${m.id.toString().padRight(6)}'
-            '${m.nome.padRight(21)}${_qtd(m.quantidade)}');
+            '${_cortar(m.nome, 20).padRight(21)}${_qtd(m.quantidade)}');
       }
       print('-----------------------------------------');
       print('Página ${pagina + 1} de $totalPaginas');
