@@ -1,0 +1,319 @@
+idPATRIMONIO,nome,valor,descricao,estado_conservacao,data_compra,LOCALIZACAO_idLOCALIZACAO
+1,Balcão de recepção em MDF,2800.00,Balcão em L com tampo laminado e gaveteiro com chave.,Bom,2019-04-02,3
+2,Computador desktop Dell OptiPlex,3400.00,"Computador para cadastro de sócios, com monitor de 21 polegadas.",Bom,2018-04-13,3
+3,Cadeira giratória de escritório,650.00,Cadeira com regulagem de altura e braços fixos.,Regular,2020-04-25,3
+4,Telefone IP Intelbras,420.00,Aparelho de mesa com identificador de chamadas.,Bom,2021-01-31,3
+5,Mesa de reunião 3 metros,3200.00,Mesa retangular para 10 lugares em MDF branco.,Bom,2020-09-30,4
+6,Cadeira de reunião estofada,380.00,"Cadeira fixa com estofado preto, 10 unidades.",Bom,2020-07-03,4
+7,Projetor Epson PowerLite,2900.00,Projetor de 3.600 lumens com controle remoto.,Bom,2019-07-26,4
+8,Tela de projeção retrátil,520.00,Tela de 100 polegadas com fixação no teto.,Bom,2019-02-24,4
+9,Servidor Dell PowerEdge T140,7800.00,Servidor de arquivos e cadastro de sócios.,Bom,2024-02-12,5
+10,Switch gerenciável TP-Link 24 portas,1350.00,Switch de rede para o clube.,Bom,2018-12-23,5
+11,Rack de parede 12U,980.00,Rack fechado com chave e ventilação.,Bom,2024-08-15,5
+12,Nobreak APC 1500VA,1650.00,Nobreak para servidor e roteadores.,Regular,2016-09-24,5
+13,Gravador NVR Intelbras 16 canais,2300.00,Gravador das câmeras de segurança do clube.,Bom,2018-05-11,5
+14,Armário de aço 2 portas,890.00,Armário para arquivos de documentos.,Regular,2012-05-02,6
+15,Mesa de escritório,720.00,Mesa com duas gavetas.,Bom,2019-01-19,6
+16,Sofá de 3 lugares,1900.00,Sofá estofado em courino.,Bom,2020-06-14,7
+17,Mesa de centro,350.00,Mesa de centro em madeira.,Regular,2014-08-10,7
+18,Bebedouro de coluna Libell,1100.00,Bebedouro refrigerado para visitantes.,Bom,2023-09-01,7
+19,Quadro de avisos em cortiça,280.00,Quadro de 120x90 cm para comunicados.,Bom,2024-10-01,8
+20,Extintor de pó ABC 6kg,260.00,Extintor com validade controlada.,Bom,2018-04-19,8
+21,Geladeira Consul Frost Free 340L,2700.00,Geladeira branca de uso dos funcionários.,Bom,2024-04-17,9
+22,Micro-ondas Electrolux 31L,650.00,Micro-ondas de bancada.,Bom,2020-03-25,9
+23,Cafeteira elétrica Oster,320.00,"Cafeteira para 30 xícaras. Danificado, sem conserto viável; aguardando baixa.",Irrecuperável,2009-08-19,9
+24,Mesa com 4 cadeiras,900.00,"Conjunto de mesa e cadeiras em fórmica. Desgaste avançado, necessita manutenção.",Ruim,2008-01-11,9
+25,Mesa em L diretoria,3900.00,Mesa em L com tampo de 25 mm e gavetas.,Bom,2024-02-11,10
+26,Notebook Lenovo ThinkPad,4800.00,Notebook do setor financeiro.,Bom,2022-09-15,10
+27,Impressora multifuncional HP LaserJet,2100.00,Impressora laser com scanner.,Bom,2020-06-21,10
+28,Arquivo de aço 4 gavetas,1050.00,"Arquivo para documentos do clube. Desgaste avançado, necessita manutenção.",Ruim,2012-07-26,10
+29,Ar-condicionado split 12.000 BTUs,2600.00,Equipamento inverter da sala.,Bom,2024-08-10,10
+30,Cofre digital 40L,1750.00,Cofre eletrônico para valores.,Bom,2021-02-13,10
+31,Dispenser de papel toalha,110.00,Dispenser de parede em plástico ABS.,Bom,2018-01-27,11
+32,Espelho com moldura,180.00,Espelho de 60x80 cm.,Bom,2019-10-16,11
+33,Dispenser de sabonete líquido,95.00,"Saboneteira de parede, 800 ml.",Bom,2022-09-28,12
+34,Espelho com moldura,180.00,Espelho de 60x80 cm.,Bom,2021-10-25,12
+35,Carrinho de golfe elétrico para manutenção,16500.00,"Veículo elétrico para transporte interno de equipamentos. Desgaste avançado, necessita manutenção.",Ruim,2009-07-10,13
+36,Roçadeira Stihl FS 220,2700.00,"Roçadeira a gasolina para o gramado. Desgaste avançado, necessita manutenção.",Ruim,2009-06-17,13
+37,Escada de alumínio 7 degraus,430.00,Escada dobrável de alumínio.,Bom,2020-05-31,13
+38,Conjunto de mesa e cadeiras de ferro,1300.00,"Mesa redonda com 4 cadeiras para visitantes. Desgaste avançado, necessita manutenção.",Ruim,2013-03-01,14
+39,Roleta de controle de acesso,9800.00,Catraca de acesso com leitor biométrico.,Bom,2021-10-10,14
+40,Câmera de segurança Intelbras VHD,360.00,Câmera bullet full HD.,Bom,2019-02-23,15
+41,Interfone Intelbras,280.00,Interfone de comunicação com a portaria.,Bom,2019-01-15,15
+42,Cancela automática PPA,4200.00,Cancela eletrônica com controle remoto.,Bom,2022-04-06,16
+43,Poste de iluminação em LED,1850.00,"Poste de 6 metros, 10 unidades instaladas.",Bom,2019-02-01,16
+44,Bicicletário de aço 10 vagas,1250.00,Suporte para bicicletas em aço galvanizado.,Bom,2022-01-10,17
+45,Cobertura de policarbonato,5300.00,"Cobertura sobre vagas de motos. Desgaste avançado, necessita manutenção.",Ruim,2009-04-01,17
+46,Bomba de recirculação Sodramar,2400.00,Bomba para circulação de água do lago.,Regular,2018-10-08,18
+47,Fonte aeradora,3600.00,Aerador com jato flutuante e iluminação.,Bom,2020-12-19,18
+48,Banco de concreto à beira do lago,750.00,"Banco de concreto, 6 unidades. Desgaste avançado, necessita manutenção.",Ruim,2007-02-27,18
+49,Ponte de madeira ornamental,8900.00,"Pequena ponte de madeira tratada. Danificado, sem conserto viável; aguardando baixa.",Irrecuperável,2007-09-10,18
+50,Chuveiro elétrico Lorenzetti,160.00,"Chuveiro de 5.500W, 12 unidades. Desgaste avançado, necessita manutenção.",Ruim,2012-01-24,20
+51,Banco de PVC para vestiário,220.00,"Banco de PVC de 1,2 m, 6 unidades.",Bom,2024-01-06,20
+52,Vaso sanitário com caixa acoplada,620.00,Vaso de louça branca.,Bom,2019-05-27,21
+53,Secador de mãos elétrico,490.00,Secador automático de parede.,Bom,2022-03-31,21
+54,Vaso sanitário com caixa acoplada,620.00,Vaso de louça branca.,Bom,2018-11-19,22
+55,Mictório de louça,380.00,Mictório com sifão.,Regular,2018-03-11,22
+56,Bebedouro de coluna,1050.00,Bebedouro refrigerado para atletas.,Bom,2021-04-15,23
+57,Armário de aço 12 portas,1450.00,Armário guarda-volumes com chave.,Regular,2019-01-18,23
+58,Mesa de sinuca profissional,7800.00,"Mesa oficial de 2,84 m com pano verde.",Bom,2024-12-08,24
+59,Mesa de sinuca profissional reserva,6900.00,"Segunda mesa, tampo de ardósia.",Bom,2022-01-21,24
+60,Rack de tacos de parede,340.00,Suporte para 12 tacos.,Bom,2024-06-22,24
+61,Iluminação para mesas de sinuca,1300.00,Luminárias suspensas.,Bom,2020-02-27,24
+62,Balança digital com estadiômetro,1900.00,Balança para avaliação física.,Bom,2018-10-12,25
+63,Adipômetro científico,1100.00,Compasso de dobras cutâneas.,Bom,2018-07-07,25
+64,Maca de avaliação,1500.00,Maca estofada para avaliação.,Bom,2020-07-22,25
+65,Aspirador de pó industrial,1300.00,"Aspirador de 1.400W para limpeza. Desgaste avançado, necessita manutenção.",Ruim,2012-04-30,26
+66,Carrinho de limpeza com balde duplo,620.00,Carrinho com espremedor.,Bom,2021-03-31,26
+67,Armário de madeira para bolas e tacos,720.00,Armário de 2 portas com chave.,Bom,2018-11-23,27
+68,Jogo de bolas de sinuca,560.00,Jogo completo de bolas oficiais.,Bom,2020-08-11,27
+69,Mesa de bar de madeira,420.00,"Mesa de madeira maciça, 15 unidades.",Regular,2013-02-17,28
+70,Cadeira de bar de madeira,190.00,"Cadeira de madeira, 60 unidades. Desgaste avançado, necessita manutenção.",Ruim,2010-01-21,28
+71,Toldo retrátil,3200.00,Toldo de lona acrílica para a varanda.,Regular,2015-02-12,28
+72,Balcão frigorífico expositor,5400.00,Balcão refrigerado de 2 portas.,Bom,2023-02-01,29
+73,Chopeira elétrica 2 torneiras,3900.00,Chopeira com barril de 50 L.,Bom,2022-02-03,29
+74,Máquina de gelo Everest,4800.00,Máquina de 50 kg por dia.,Bom,2019-10-29,29
+75,Freezer horizontal 400L,3100.00,Freezer de duas portas.,Regular,2016-02-25,29
+76,Fogão industrial 4 bocas,1900.00,Fogão de aço inox com forno.,Regular,2015-12-26,30
+77,Chapa bifeteira a gás,1750.00,Chapa de 60 cm em aço carbono.,Bom,2020-05-08,30
+78,Fritadeira elétrica industrial,1450.00,Fritadeira de 2 cubas.,Bom,2020-12-29,30
+79,Prateleira de aço,430.00,Prateleira de 5 níveis.,Bom,2018-10-20,31
+80,Carrinho de transporte de caixas,380.00,Carrinho dobrável.,Regular,2018-10-31,31
+81,Ventilador de teto,290.00,"Ventilador de 3 pás, 8 unidades.",Regular,2019-02-13,32
+82,Aquecedor a gás de ambiente,1900.00,Aquecedor tipo cogumelo para uso externo.,Bom,2019-12-02,32
+83,Painel elétrico de comando da piscina,4600.00,Painel com disjuntores e temporizador.,Regular,2017-12-27,34
+84,Cadeira de salva-vidas,1700.00,Cadeira alta de observação.,Bom,2020-09-29,34
+85,Kit de primeiros socorros,220.00,Maleta com materiais básicos.,Bom,2019-11-01,34
+86,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2023-03-09,35
+87,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2022-04-04,36
+88,Barra de apoio PNE,240.00,Barra de aço inox.,Bom,2021-01-10,36
+89,Gerador de vapor Sodramar,6800.00,Gerador a vapor de 12 kW.,Regular,2019-03-06,37
+90,Banco de madeira para sauna,950.00,"Banco escalonado de madeira. Danificado, sem conserto viável; aguardando baixa.",Irrecuperável,2010-06-06,37
+91,Aquecedor elétrico para sauna seca,5900.00,Aquecedor de 9 kW com pedras.,Bom,2024-03-31,38
+92,Banco de pinus para sauna,880.00,Banco de madeira tratada.,Regular,2014-06-18,38
+93,Relógio de areia e termômetro,110.00,Conjunto de controle de tempo e temperatura.,Bom,2021-08-21,38
+94,Ducha com água fria,430.00,"Ducha de parede, 4 unidades.",Bom,2018-08-18,39
+95,Ducha de contraste,1600.00,Ducha com temperatura controlada.,Regular,2014-07-27,39
+96,Armário de PVC guarda-volumes,1200.00,Armário de 8 portas com chave.,Bom,2018-05-12,40
+97,Banco de madeira,350.00,"Banco de 1,5 m.",Bom,2021-07-16,40
+98,Armário guarda-volumes de aço,1500.00,"Armário de 20 portas com chaves. Desgaste avançado, necessita manutenção.",Ruim,2013-08-25,41
+99,Secador de cabelo de parede,280.00,Secador fixo.,Bom,2021-01-01,41
+100,Poltrona reclinável,1750.00,"Poltrona de repouso estofada, 4 unidades.",Bom,2018-09-29,42
+101,Chaise de descanso,1350.00,"Chaise de PVC, 2 unidades.",Bom,2020-05-14,42
+102,Ar-condicionado split 18.000 BTUs,3300.00,Equipamento inverter.,Bom,2024-05-12,42
+103,Conjunto de vasos decorativos,980.00,Vasos de cerâmica com plantas ornamentais.,Bom,2021-07-12,43
+104,Banco de jardim de ferro,680.00,"Banco de ferro, 2 unidades. Desgaste avançado, necessita manutenção.",Ruim,2006-09-02,43
+105,Aquecedor solar de piscina,8200.00,Aquecedor solar com 12 placas.,Regular,2019-05-08,44
+106,Motobomba filtro Sodramar,2600.00,"Conjunto de filtro de areia com motobomba de 1,5 cv.",Bom,2023-08-07,44
+107,Capa térmica para piscina,1850.00,Capa para conservar a temperatura.,Bom,2022-06-09,44
+108,Mesa de madeira para festas,1250.00,"Mesa de 2,5 m, 12 unidades. Desgaste avançado, necessita manutenção.",Ruim,2008-02-09,46
+109,Banco de madeira para mesa,480.00,"Banco corrido, 24 unidades.",Regular,2017-02-22,46
+110,Caixa de som amplificada,1700.00,Caixa ativa de 300W.,Bom,2019-08-09,46
+111,Geladeira Brastemp 400L,3100.00,Geladeira branca duplex.,Bom,2020-12-20,47
+112,Fogão 6 bocas Dako,1550.00,Fogão doméstico de 6 bocas.,Regular,2013-07-25,47
+113,Pia de aço inox,900.00,Pia com cuba dupla.,Bom,2020-10-07,47
+114,Churrasqueira de alvenaria com espeto giratório,5200.00,Churrasqueira com chaminé e espeto automático.,Bom,2024-04-18,48
+115,Kit utensílios de churrasco,450.00,"Facas, espetos e pinças de aço inox.",Regular,2018-01-16,48
+116,Palco modular,7400.00,Palco desmontável de 6x3 m.,Regular,2014-12-12,50
+117,Mesa redonda 10 lugares,880.00,"Mesa de 1,6 m, 20 unidades.",Regular,2020-05-17,50
+118,Cadeira plástica empilhável,85.00,"Cadeira branca, 400 unidades.",Regular,2018-07-22,50
+119,Sistema de som profissional,8900.00,"Mesa de som, caixas e microfones.",Bom,2022-10-21,50
+120,Ventilador de parede industrial,780.00,"Ventilador de 60 cm, 10 unidades.",Regular,2018-07-18,50
+121,Corrimão metálico,3200.00,Guarda-corpo de aço para o mezanino.,Bom,2022-06-24,51
+122,Mesa de apoio,360.00,Mesa de dobrar.,Regular,2016-01-22,51
+123,Bebedouro refrigerado,1050.00,Bebedouro de coluna.,Bom,2020-06-17,51
+124,Esteira ergométrica Movement LX,8900.00,Esteira profissional com inclinação elétrica.,Bom,2019-07-21,53
+125,Bicicleta ergométrica vertical,3200.00,Bicicleta com monitor de frequência.,Bom,2023-09-19,53
+126,Leg press 45 graus,6800.00,Aparelho de musculação com anilhas.,Bom,2023-07-15,53
+127,Estação de musculação multifuncional,9200.00,Estação com 6 funções.,Bom,2019-01-08,53
+128,Banco regulável para musculação,890.00,"Banco de 7 posições, 4 unidades.",Regular,2020-06-22,53
+129,Kit halteres de 1 a 30 kg,6100.00,Jogo de halteres emborrachados.,Bom,2018-07-12,53
+130,Colchonetes,75.00,"Colchonete de 1 m, 30 unidades.",Regular,2013-03-25,54
+131,Step de ginástica,150.00,"Step com 3 níveis, 20 unidades.",Bom,2019-09-19,54
+132,Espelhos de parede,3400.00,Conjunto de espelhos de 2x1 m.,Bom,2019-10-18,54
+133,Caixa de som para aulas,1250.00,Caixa portátil com microfone.,Bom,2022-09-26,54
+134,Jogo de malha oficial,420.00,Jogo com 2 pares de discos e pinos.,Regular,2018-09-08,55
+135,Pista de cimento com borda de madeira,7500.00,Pista oficial de 18 metros.,Regular,2012-09-17,55
+136,Extintor de CO2 5kg,480.00,Extintor para área de circulação.,Bom,2022-04-26,56
+137,Luminária de emergência,190.00,Luminária LED de 30 LEDs.,Bom,2022-04-13,56
+138,Vaso sanitário,570.00,Vaso sanitário com caixa acoplada.,Bom,2024-09-06,57
+139,Mictório de louça,380.00,Mictório com sifão.,Regular,2017-04-01,57
+140,Vaso sanitário,570.00,Vaso sanitário com caixa acoplada.,Bom,2023-12-08,58
+141,Trocador de bebê de parede,450.00,Trocador dobrável.,Bom,2020-10-26,58
+142,Máquina de lavar piso,2950.00,Lavadora de piso 40 cm.,Regular,2018-03-16,59
+143,Kit mops e vassouras industriais,290.00,Itens de limpeza.,Regular,2012-02-17,59
+144,Piscina de bolinhas,1400.00,"Piscina de bolinhas com 1.000 bolas. Desgaste avançado, necessita manutenção.",Ruim,2007-04-28,60
+145,Escorregador infantil de plástico,780.00,"Escorregador de 1,4 m.",Bom,2019-04-15,60
+146,Mesa infantil com 4 cadeiras,450.00,Conjunto de plástico colorido.,Regular,2019-08-24,60
+147,Estante de brinquedos,650.00,Estante de MDF com nichos.,Bom,2024-01-09,60
+148,TV de 43 polegadas,1900.00,TV smart para vídeos infantis.,Bom,2020-12-28,60
+149,Armário guarda-volumes de PVC,1650.00,Armário de 20 portas.,Regular,2020-08-14,62
+150,Secador de cabelo de parede,280.00,"Secador de cabelo fixo, 3 unidades.",Bom,2021-10-25,62
+151,Banco de vestiário,260.00,Banco de madeira de 2 m.,Regular,2013-04-01,62
+152,Armário guarda-volumes de PVC,1650.00,"Armário de 20 portas. Desgaste avançado, necessita manutenção.",Ruim,2014-09-19,63
+153,Banco de vestiário,260.00,"Banco de madeira de 2 m, 4 unidades.",Regular,2016-11-15,63
+154,Chuveiros elétricos,160.00,"Chuveiro de 5.500W, 8 unidades.",Regular,2013-10-09,63
+155,Armário guarda-volumes de aço,1550.00,"Armário de 24 portas com chave. Desgaste avançado, necessita manutenção.",Ruim,2012-05-28,64
+156,Roleta de entrada da piscina,9500.00,Catraca para controle de acesso.,Bom,2018-01-14,64
+157,Clorador automático,1350.00,Dosador para tratamento da água da piscina.,Bom,2020-12-14,65
+158,Armário ventilado para químicos,1100.00,Armário de aço com ventilação.,Bom,2023-08-13,65
+159,Kit teste de pH e cloro,210.00,Kit para análise da água.,Bom,2020-01-02,65
+160,Banco de concreto,520.00,"Banco de alvenaria revestido, 4 unidades. Desgaste avançado, necessita manutenção.",Ruim,2012-02-22,66
+161,Ducha externa,720.00,"Ducha de parede com acionamento. Desgaste avançado, necessita manutenção.",Ruim,2012-07-10,66
+162,Caixa d'água de fibra 10.000 litros,6500.00,Reservatório elevado com tampa.,Regular,2019-01-05,67
+163,Bomba de pressurização Schneider,1650.00,Bomba para abastecer os vestiários.,Bom,2021-05-07,67
+164,Bebedouro de coluna duplo,1900.00,Bebedouro de acionamento por botão.,Regular,2019-03-02,68
+165,Escada de piscina em aço inox,1400.00,Escada com 3 degraus.,Bom,2023-09-11,70
+166,Raia divisória flutuante,1050.00,Raia de 25 metros.,Regular,2018-10-30,70
+167,Trampolim,2300.00,Trampolim fixo.,Regular,2014-03-25,70
+168,Motobomba filtro Sodramar,3300.00,Conjunto de filtro com motobomba de 2 cv.,Bom,2019-09-19,70
+169,Escada de piscina em aço inox,1400.00,Escada com 3 degraus.,Bom,2022-03-12,71
+170,Motobomba filtro Sodramar,3300.00,Conjunto de filtro com motobomba de 2 cv.,Bom,2019-10-24,71
+171,Boias salva-vidas,190.00,"Boia com corda, 4 unidades.",Bom,2024-01-19,71
+172,Escorregador de piscina infantil,1900.00,Escorregador de fibra.,Bom,2023-12-13,72
+173,Cerca de segurança removível,1100.00,Grade de proteção para crianças.,Bom,2018-01-03,72
+174,Motobomba filtro Sodramar,1800.00,Motobomba de 1 cv.,Regular,2018-09-19,72
+175,Blocos de partida,2900.00,"Blocos de partida em aço, 6 unidades.",Bom,2021-08-20,73
+176,Raias divisórias flutuantes,2400.00,Conjunto de 7 raias de 25 metros.,Bom,2023-06-25,73
+177,Cronômetro e placar de natação,3800.00,Placar eletrônico para competições.,Bom,2018-03-21,73
+178,Sistema de filtragem industrial,15000.00,Filtros e bombas para 300 m².,Bom,2019-04-04,73
+179,Fogão industrial 6 bocas com forno,3600.00,Fogão de aço inox.,Regular,2016-01-26,76
+180,Câmara fria de 4 portas,14500.00,Câmara fria modular.,Bom,2021-06-13,76
+181,Coifa industrial,5800.00,Coifa de aço inox com exaustor.,Regular,2014-09-07,76
+182,Fritadeira industrial,2300.00,Fritadeira elétrica.,Bom,2018-08-26,76
+183,Forno combinado,18500.00,Forno combinado a gás.,Bom,2020-09-13,76
+184,Estante de aço 5 prateleiras,600.00,Estante para armazenamento de alimentos.,Bom,2024-05-12,77
+185,Freezer vertical 500L,4200.00,Freezer vertical de 4 portas.,Bom,2018-11-19,77
+186,Carrinho plataforma,520.00,Carrinho de aço com rodas.,Regular,2012-12-16,77
+187,Máquina de lavar louças industrial,12900.00,Lavadora de louças por esteira.,Bom,2023-06-14,78
+188,Bancada de aço inox 2m,2400.00,Bancada com cuba.,Bom,2018-10-11,78
+189,Balcão refrigerado de bebidas,4900.00,Expositor vertical de 3 portas.,Bom,2023-12-22,79
+190,Máquina de café expresso,7400.00,Máquina profissional de 2 grupos.,Bom,2019-05-31,79
+191,Liquidificador industrial,1250.00,"Liquidificador de 4 litros. Desgaste avançado, necessita manutenção.",Ruim,2012-04-13,79
+192,Terminal de ponto de venda,3900.00,Computador PDV com leitor de código de barras.,Bom,2023-05-01,80
+193,Impressora fiscal Bematech,1850.00,Impressora térmica fiscal.,Bom,2024-03-01,80
+194,Gaveta de dinheiro,420.00,Gaveta com chave.,Bom,2019-11-08,80
+195,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2020-12-21,81
+196,Dispenser de papel higiênico,110.00,Dispenser de ABS.,Bom,2023-12-02,81
+197,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2024-10-20,82
+198,Mictório de louça,380.00,Mictório de louça.,Regular,2016-09-29,82
+199,Conjunto de mesas e cadeiras de alumínio,5200.00,20 mesas com 80 cadeiras.,Regular,2014-05-17,83
+200,Ventilador de teto,290.00,"Ventilador de 3 pás, 6 unidades.",Regular,2018-01-17,83
+201,Guarda-sol,620.00,"Guarda-sol de 2,4 m. Desgaste avançado, necessita manutenção.",Ruim,2007-08-14,83
+202,Máquina de lavar industrial 15 kg,9800.00,Lavadora de roupas industrial.,Bom,2020-04-03,85
+203,Secadora industrial 15 kg,8900.00,Secadora a gás.,Bom,2021-06-30,85
+204,Calandra de passar,15200.00,Calandra para lençóis e toalhas.,Regular,2016-06-22,85
+205,Estante de aço para enxoval,750.00,Estante para toalhas.,Bom,2022-03-10,86
+206,Kit toalhas de piscina,3200.00,"Toalhas bordadas, 100 unidades. Desgaste avançado, necessita manutenção.",Ruim,2007-02-04,86
+207,Bancada de ferramentas,1200.00,"Bancada de trabalho com morsa. Desgaste avançado, necessita manutenção.",Ruim,2011-01-31,87
+208,Furadeira de impacto Bosch,620.00,Furadeira de 650W.,Bom,2023-01-24,87
+209,Esmerilhadeira Makita,480.00,Esmerilhadeira de 4 1/2 polegadas.,Bom,2019-05-11,87
+210,Compressor de ar,1700.00,"Compressor de 50 litros. Desgaste avançado, necessita manutenção.",Ruim,2006-09-15,87
+211,Bebedouro de coluna,1900.00,"Bebedouro de acionamento por botão. Desgaste avançado, necessita manutenção.",Ruim,2011-12-18,88
+212,Placar eletrônico,5800.00,Placar para vôlei e basquete.,Bom,2018-09-20,89
+213,Sistema de iluminação em LED,21500.00,Refletores para a quadra.,Bom,2021-10-16,89
+214,Estrutura de metal da cobertura,95000.00,Estrutura metálica de telhado em arco.,Bom,2018-03-28,89
+215,Tabela de basquete com aro,4100.00,"Conjunto de tabela com aro, 2 unidades.",Bom,2024-08-06,90
+216,Piso esportivo,32000.00,Piso em laminado esportivo.,Bom,2024-03-18,90
+217,Bola oficial de basquete,290.00,"Bola Spalding, 10 unidades. Desgaste avançado, necessita manutenção.",Ruim,2012-05-27,90
+218,Poste de vôlei,1900.00,Poste com rede.,Bom,2024-08-07,90
+219,Arquibancada de concreto,65000.00,Arquibancada para 500 pessoas.,Bom,2020-06-21,91
+220,Corrimão metálico,5900.00,Corrimão de aço galvanizado.,Bom,2018-01-30,91
+221,Mesa de reunião,1500.00,Mesa para comissão técnica.,Bom,2018-10-18,92
+222,Cadeira de escritório,480.00,"Cadeira giratória, 4 unidades.",Regular,2019-12-09,92
+223,Guichê de bilheteria,1900.00,Balcão com vidro de proteção.,Bom,2018-08-30,93
+224,Impressora térmica de ingressos,1700.00,Impressora de tickets.,Bom,2020-07-26,93
+225,Banco de espera,850.00,"Banco de madeira de 2 m, 3 unidades.",Regular,2012-10-03,94
+226,Bebedouro de coluna,1050.00,Bebedouro refrigerado.,Regular,2012-05-08,94
+227,Conjunto de mesa e cadeiras,1500.00,Mesa com 4 cadeiras de ferro.,Regular,2015-09-15,95
+228,Vaso decorativo,290.00,"Vasos grandes, 4 unidades.",Bom,2018-10-18,95
+229,Câmera de segurança,360.00,"Câmera bullet, 2 unidades.",Bom,2023-10-07,96
+230,Rádio comunicador,420.00,Par de rádios comunicadores.,Bom,2020-09-01,96
+231,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2021-02-14,97
+232,Banco de vestiário,260.00,"Banco de madeira, 3 unidades.",Regular,2019-07-03,97
+233,Chuveiro elétrico,160.00,"Chuveiro de 5.500W, 4 unidades. Desgaste avançado, necessita manutenção.",Ruim,2012-12-10,97
+234,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2020-05-27,98
+235,Armário guarda-volumes,1550.00,Armário de 12 portas.,Regular,2018-01-17,98
+236,Chuveiro elétrico,160.00,"Chuveiro de 5.500W, 4 unidades.",Regular,2013-06-25,98
+237,Corrimão de rampa,1700.00,Corrimão de aço galvanizado.,Bom,2024-05-27,99
+238,Piso antiderrapante,3200.00,Piso de concreto com revestimento antiderrapante.,Regular,2018-06-18,99
+239,Postes de vôlei,1900.00,Par de postes de aço com regulagem.,Bom,2023-04-21,100
+240,Rede de vôlei oficial,450.00,Rede de nylon com antenas.,Regular,2014-09-22,100
+241,Alambrado de tela de aço,11500.00,Alambrado de tela de aço com 3 m de altura.,Regular,2020-10-18,100
+242,Refletores de LED 200W,3800.00,Quatro refletores de LED.,Bom,2023-04-22,100
+243,Placar de bocha,1900.00,Placar manual de madeira.,Regular,2016-07-25,101
+244,Cobertura metálica do salão,42000.00,Cobertura em telha de aço.,Bom,2020-02-19,101
+245,Pista de areia compactada oficial,8500.00,Pista de 24 m com bordas de madeira.,Regular,2013-01-21,102
+246,Jogo de bochas oficial,780.00,Jogo com 8 bolas e bolim.,Regular,2013-02-01,102
+247,Pista de areia compactada oficial,8500.00,Pista de 24 m com bordas de madeira.,Regular,2019-05-23,103
+248,Jogo de bochas oficial,780.00,Jogo com 8 bolas e bolim.,Bom,2022-11-01,103
+249,Bancos de concreto,1500.00,"Bancos de alvenaria, 6 unidades.",Regular,2015-12-22,104
+250,Luminárias externas,1700.00,"Luminárias de LED, 6 unidades.",Bom,2022-10-01,104
+251,Arquibancada de concreto pequena,9800.00,Arquibancada para 80 pessoas.,Regular,2016-08-10,105
+252,Guarda-corpo metálico,3300.00,Guarda-corpo de aço.,Regular,2017-03-27,105
+253,Balcão de bar,3200.00,Balcão em alvenaria com tampo de granito.,Regular,2020-03-05,106
+254,Geladeira expositora 4 portas,6400.00,Geladeira para cervejas.,Bom,2018-08-10,106
+255,Chopeira elétrica,3900.00,Chopeira de 2 torneiras.,Bom,2019-02-08,106
+256,Freezer horizontal,2800.00,Freezer de 300 L.,Regular,2012-09-05,106
+257,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2022-07-08,107
+258,Vaso sanitário,570.00,Vaso com caixa acoplada.,Bom,2021-10-21,108
+259,Barra de apoio,240.00,Barra de apoio em aço inox.,Bom,2019-03-24,108
+260,Traves de futsal oficiais,3400.00,Par de traves de aço com redes.,Bom,2020-10-15,110
+261,Piso esportivo de cimento polido,48000.00,Piso demarcado.,Regular,2014-02-23,110
+262,Alambrado de tela de aço,16500.00,"Alambrado perimetral de 6 m. Desgaste avançado, necessita manutenção.",Ruim,2010-10-18,110
+263,Refletores de LED 400W,10500.00,Oito refletores.,Bom,2024-01-06,110
+264,Placar eletrônico de futsal,5200.00,Placar com cronômetro.,Bom,2023-01-12,110
+265,Espelhos de parede 12 m,8200.00,Conjunto de espelhos fixos.,Bom,2019-07-29,112
+266,Barra de ballet,1250.00,Barra de apoio fixa.,Bom,2022-09-25,112
+267,Caixa de som amplificada,1900.00,Caixa ativa com Bluetooth.,Bom,2020-01-22,112
+268,Piso de madeira para dança,27500.00,Piso de tacos.,Regular,2015-02-14,112
+269,Tatames,3200.00,"Tatames de EVA, 80 unidades.",Bom,2023-03-10,113
+270,Bolas de pilates,700.00,"Bolas de pilates, 20 unidades.",Bom,2020-10-20,113
+271,Colchonetes de ginástica,75.00,"Colchonetes, 30 unidades. Desgaste avançado, necessita manutenção.",Ruim,2008-04-23,113
+272,Estante de aço 6 prateleiras,750.00,Estante para materiais esportivos.,Bom,2022-12-21,114
+273,Paleteira manual,2400.00,"Paleteira de 2.000 kg. Desgaste avançado, necessita manutenção.",Ruim,2011-03-23,114
+274,Bolas variadas,1600.00,"Bolas de futsal, vôlei e basquete.",Regular,2013-02-05,114
+275,Carrinho de limpeza,680.00,Carrinho com balde duplo.,Bom,2018-07-27,115
+276,Aspirador de pó industrial,1300.00,Aspirador de 1.400W.,Regular,2019-04-25,115
+277,Bancada de trabalho,1300.00,"Bancada com morsa. Desgaste avançado, necessita manutenção.",Ruim,2013-08-18,117
+278,Soldador inversor,1500.00,Máquina de solda de 200A.,Bom,2018-03-02,117
+279,Serra circular Makita,980.00,Serra de 7 1/4 polegadas.,Bom,2019-01-18,117
+280,Caixa de ferramentas completa,1100.00,Maleta com ferramentas diversas.,Regular,2020-06-13,117
+281,Carrinho de limpeza,680.00,Carrinho com balde duplo.,Bom,2020-08-26,118
+282,Lavadora de alta pressão Karcher,1450.00,Lavadora de 2.000 PSI.,Bom,2019-11-13,118
+283,Kit de produtos de limpeza,900.00,Estoque de materiais de limpeza.,Novo,2026-04-12,118
+284,Rede de tênis oficial,900.00,"Rede com cinta central. Danificado, sem conserto viável; aguardando baixa.",Irrecuperável,2006-07-17,120
+285,Piso de saibro,18500.00,Quadra de saibro regulamentar.,Regular,2017-05-25,120
+286,Cadeira de árbitro,2400.00,Cadeira alta de árbitro.,Bom,2020-05-25,120
+287,Alambrado de tela,9500.00,"Alambrado perimetral. Desgaste avançado, necessita manutenção.",Ruim,2010-09-13,120
+288,Rede de tênis oficial,900.00,Rede com cinta central.,Regular,2012-08-28,121
+289,Piso de saibro,18500.00,Quadra de saibro regulamentar.,Regular,2013-11-05,121
+290,Refletores de LED 300W,5800.00,Seis refletores.,Bom,2022-04-02,121
+291,Máquina de lançar bolas,5200.00,Lançadora elétrica.,Bom,2018-01-09,121
+292,Arquibancada de concreto,20000.00,Arquibancada para 100 pessoas.,Regular,2016-05-18,122
+293,Guarda-corpo de aço,2900.00,Guarda-corpo galvanizado.,Regular,2014-12-22,122
+294,Mesa de madeira com bancos,1450.00,"Mesa de 2,5 m com 2 bancos. Desgaste avançado, necessita manutenção.",Ruim,2010-03-06,123
+295,Churrasqueira de alvenaria pequena,2800.00,Churrasqueira com chaminé.,Regular,2020-10-20,123
+296,Cobertura de telhado de madeira,6800.00,Cobertura em telha cerâmica.,Bom,2023-02-07,123
+297,Vaso sanitário,570.00,"Vaso com caixa acoplada, 3 unidades.",Regular,2015-03-14,124
+298,Pia com cuba,420.00,Pia de louça.,Bom,2022-09-29,124
+299,Vaso sanitário,570.00,Vaso com caixa acoplada.,Regular,2019-10-24,125
+300,Chuveiro,160.00,"Chuveiro elétrico, 2 unidades. Desgaste avançado, necessita manutenção.",Ruim,2013-12-26,125
+301,Vaso sanitário PNE,950.00,Vaso com altura especial.,Novo,2026-09-23,126
+302,Barras de apoio de aço inox,480.00,Conjunto de barras.,Novo,2024-11-13,126
+303,Vaso sanitário PNE,950.00,Vaso com altura especial.,Novo,2025-01-23,127
+304,Barras de apoio de aço inox,480.00,Conjunto de barras.,Novo,2025-08-30,127
+305,Traves oficiais,5800.00,"Par de traves de aço. Desgaste avançado, necessita manutenção.",Ruim,2011-07-27,128
+306,Gramado de grama esmeralda,38000.00,Gramado com sistema de irrigação.,Bom,2018-08-28,128
+307,Bancos de reserva,3400.00,Dois bancos cobertos.,Regular,2018-06-30,128
+308,Refletores de LED 600W,21000.00,Oito refletores em postes.,Bom,2024-01-30,128
+309,Alambrado,14000.00,Alambrado de segurança.,Regular,2012-09-06,128
+310,Traves de mini campo,2400.00,Par de traves de aço.,Regular,2020-05-21,129
+311,Gramado sintético,16000.00,Grama sintética de 20x40 m.,Bom,2021-07-08,129
+312,Iluminação de campo,8900.00,Postes com refletores.,Bom,2018-08-23,129
+313,Postes de vôlei de areia,1900.00,Par de postes com rede.,Bom,2018-07-25,130
+314,Areia lavada para quadra,3800.00,Reposição de areia.,Novo,2026-09-03,130
+315,Refletores de LED,3200.00,Quatro refletores.,Bom,2023-08-22,130
+316,Postes de vôlei de areia,1900.00,Par de postes de aço.,Bom,2023-12-16,131
+317,Rede de vôlei de praia,430.00,Rede oficial.,Regular,2013-10-06,131
+318,Delimitação de quadra,350.00,Fitas de demarcação.,Regular,2012-08-20,131

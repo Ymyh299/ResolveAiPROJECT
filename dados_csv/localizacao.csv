@@ -1,0 +1,132 @@
+idLOCALIZACAO,nome_localizacao,LOCALIZACAO_idPAI
+1,Clube ACCPE,
+2,Portaria,1
+3,Recepção,2
+4,Sala de Reunião,2
+5,Sala de CPD,2
+6,Sala,2
+7,Espera,2
+8,Hall,2
+9,Copa,2
+10,Administração,2
+11,Lavabo 1,2
+12,Lavabo 2,2
+13,Garagem,2
+14,Varanda da Portaria,2
+15,Guarita da Portaria,2
+16,Estacionamento,1
+17,Estacionamento Descoberto de Motos e Bicicletas,16
+18,Lago,1
+19,Vestiários Planta 2,1
+20,Chuveiros,19
+21,WC Feminino,19
+22,WC Masculino,19
+23,Sala dos Vestiários,19
+24,Salão de Sinuca,1
+25,Sala de Avaliação,24
+26,Despejo do Salão de Sinuca,24
+27,Armário do Salão de Sinuca,24
+28,Bar e Varanda,1
+29,Bar,28
+30,Cozinha do Bar,28
+31,Despejo do Bar,28
+32,Varanda do Bar,28
+33,Sauna e Piscina,1
+34,Casa de Controle,33
+35,WC 1 da Sauna,33
+36,WC 2 da Sauna,33
+37,Sauna Molhada,33
+38,Sauna Seca,33
+39,Sala de Banho,33
+40,Ante Sala,33
+41,Vestiário da Sauna,33
+42,Sala de Repouso,33
+43,Jardim de Inverno,33
+44,Piscina da Sauna,33
+45,Área de Lazer,1
+46,Salão da Área de Lazer,45
+47,Cozinha da Área de Lazer,45
+48,Churrasqueira,45
+49,Complexo Salão Preto e Academia,1
+50,Salão Preto,49
+51,Mezanino do Salão Preto,50
+52,Academia,49
+53,Salão da Academia,52
+54,Salão de Ginástica da Academia,52
+55,Pista de Jogo de Malha,49
+56,Corredor de Circulação,49
+57,Sanitário Masculino,49
+58,Sanitário Feminino,49
+59,Despejo do Salão Preto,49
+60,Brinquedoteca,49
+61,Vestiários Planta 9,1
+62,Vestiário Feminino,61
+63,Vestiário Masculino,61
+64,Armários,61
+65,Produtos Químicos,61
+66,Varanda dos Vestiários,61
+67,Depósito de Água Elevado,61
+68,Bebedouro 1,61
+69,Piscinas,1
+70,Piscina Adulto 1,69
+71,Piscina Adulto 2,69
+72,Piscina Infantil,69
+73,Piscina Semiolímpica,69
+74,Restaurante,1
+75,Salão Restaurante,74
+76,Cozinha do Restaurante,75
+77,Depósito do Restaurante,75
+78,Copa do Restaurante,75
+79,Bar do Restaurante,75
+80,Caixa,75
+81,WC do Restaurante 1,75
+82,WC do Restaurante 2,75
+83,Varanda do Restaurante,75
+84,Lavanderia e Manutenção,74
+85,Lavanderia,84
+86,Rouparia,84
+87,Manutenção da Academia,84
+88,Bebedouro 2,1
+89,Quadra Coberta,1
+90,Quadra de Basquete,89
+91,Arquibancada da Quadra Coberta,89
+92,Sala da Quadra Coberta,89
+93,Bilheteria,89
+94,Hall da Quadra Coberta,89
+95,Varanda da Quadra Coberta,89
+96,Guarita da Quadra Coberta,89
+97,Sanitário/Vestiário da Quadra 1,89
+98,Sanitário/Vestiário da Quadra 2,89
+99,Rampa da Quadra Coberta,89
+100,Quadra de Vôlei Descoberta,1
+101,Salão de Bocha,1
+102,Pista de Bocha 1,101
+103,Pista de Bocha 2,101
+104,Área Livre do Bocha,101
+105,Arquibancada do Bocha,101
+106,Bar do Bocha,101
+107,WC 1 do Bar do Bocha,106
+108,WC 2 do Bar do Bocha,106
+109,Complexo de Futsal e Salões,1
+110,Quadra de Futsal,109
+111,Salão de Dança e Ginástica,109
+112,Salão de Dança,111
+113,Salão de Ginástica,111
+114,Almoxarifado,111
+115,Despejo do Almoxarifado,111
+116,Porão,109
+117,Manutenção do Porão,116
+118,DML,116
+119,Quadras de Tênis,1
+120,Quadra de Tênis 1,119
+121,Quadra de Tênis 2,119
+122,Arquibancada da Quadra de Tênis,119
+123,Quiosque de Lazer (Tênis),119
+124,Sanitários Comuns,119
+125,Sanitários da Quadra de Tênis,119
+126,Sanitário PNE Feminino,119
+127,Sanitário PNE Masculino,119
+128,Campo de Futebol,1
+129,Mini Campo de Futebol,1
+130,Campo de Areia,1
+131,Quadra de Vôlei de Areia,1

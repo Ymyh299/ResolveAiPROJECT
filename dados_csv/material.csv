@@ -1,0 +1,88 @@
+idMATERIAL,nome,quantidade,data_compra,valor_material
+1,Parafuso sextavado 1/4 x 2 pol (unidade),250.00,2026-07-15,0.45
+2,Parafuso para madeira 5 x 50 mm (caixa 100 un),12.00,2026-08-11,28.90
+3,Bucha de nylon 8 mm (pacote 100 un),15.00,2026-07-14,19.50
+4,Prego 18 x 27 (kg),8.00,2025-01-23,24.00
+5,Porca e arruela galvanizada M8 (kit),60.00,2025-01-13,1.80
+6,"Rebite de alumínio 4,8 mm (caixa 100 un)",10.00,2026-09-01,22.00
+7,Abraçadeira de nylon 20 cm (pacote 100 un),25.00,2025-01-16,16.90
+8,Fita isolante 20 m (rolo),40.00,2024-07-11,7.50
+9,Fita veda rosca 18 mm x 50 m (rolo),35.00,2026-07-03,9.90
+10,"Fio flexível 2,5 mm (metro)",300.00,2025-09-13,3.20
+11,Fio flexível 4 mm (metro),150.00,2024-10-17,5.40
+12,Cabo de rede Cat6 (metro),305.00,2024-07-04,2.90
+13,Conector RJ45 Cat6 (unidade),100.00,2024-03-26,2.50
+14,Disjuntor monopolar 20A (unidade),20.00,2026-03-22,14.50
+15,Disjuntor bipolar 32A (unidade),10.00,2026-07-16,38.00
+16,Contator tripolar 25A (unidade),4.00,2024-11-18,185.00
+17,Relé térmico de proteção de motor (unidade),3.00,2024-01-31,142.00
+18,Resistência para chuveiro 5500W (unidade),24.00,2024-05-09,17.90
+19,Resistência para gerador de vapor da sauna (unidade),2.00,2024-05-01,640.00
+20,Resistência para aquecedor de sauna seca (unidade),2.00,2024-03-14,590.00
+21,Lâmpada LED 9W bulbo (unidade),80.00,2025-01-24,8.90
+22,Refletor LED 200W (unidade),8.00,2025-05-10,189.00
+23,Refletor LED 400W (unidade),4.00,2024-03-02,420.00
+24,Reator eletrônico para lâmpada de 40W (unidade),12.00,2026-08-08,32.00
+25,Tomada 2P+T 20A (unidade),40.00,2025-10-30,9.90
+26,Interruptor simples (unidade),30.00,2026-06-21,7.50
+27,Tubo PVC soldável 25 mm (barra de 6 m),20.00,2025-02-04,34.00
+28,Tubo PVC soldável 50 mm (barra de 6 m),10.00,2025-04-23,68.00
+29,Joelho PVC soldável 25 mm (unidade),60.00,2025-08-25,2.20
+30,Registro de gaveta 3/4 pol (unidade),8.00,2026-10-20,46.00
+31,Torneira de pressão 1/2 pol (unidade),10.00,2024-01-10,38.00
+32,Sifão sanfonado universal (unidade),12.00,2024-06-23,15.90
+33,Válvula de descarga completa (unidade),6.00,2026-07-25,128.00
+34,Kit reparo caixa acoplada (unidade),15.00,2025-07-23,41.00
+35,Boia para caixa d'água 3/4 pol (unidade),6.00,2026-04-13,29.00
+36,Selo mecânico para bomba de piscina (unidade),4.00,2024-06-19,215.00
+37,Areia para filtro de piscina (saco 25 kg),20.00,2025-06-04,52.00
+38,Cloro granulado estabilizado (balde 10 kg),15.00,2025-10-07,420.00
+39,Algicida para piscina (litro),24.00,2025-04-15,32.00
+40,Barrilha elevadora de pH (kg),30.00,2025-08-14,12.50
+41,Redutor de pH (litro),20.00,2024-03-01,18.00
+42,Pastilha de cloro 200 g (kg),40.00,2024-05-23,26.00
+43,Tinta acrílica branca (lata 18 L),12.00,2024-08-09,365.00
+44,"Tinta esmalte sintético cinza (galão 3,6 L)",10.00,2026-03-31,148.00
+45,"Tinta demarcação de quadra (galão 3,6 L)",8.00,2024-08-08,215.00
+46,Massa corrida (lata 25 kg),6.00,2025-08-18,98.00
+47,Selador acrílico (lata 18 L),5.00,2026-03-02,189.00
+48,Lixa d'água grão 220 (folha),100.00,2024-05-16,1.90
+49,Rolo de lã 23 cm (unidade),20.00,2024-02-04,16.50
+50,Trincha 3 polegadas (unidade),15.00,2024-01-02,11.90
+51,"Verniz marítimo (galão 3,6 L)",6.00,2025-03-13,176.00
+52,Cola de contato (lata 750 g),8.00,2025-03-05,36.00
+53,Cola PVC (frasco 175 g),20.00,2024-04-17,14.50
+54,Silicone acético transparente (tubo),30.00,2026-08-20,13.90
+55,Adesivo epóxi bicomponente (kit),12.00,2026-02-07,24.00
+56,Graxa de lítio (pote 500 g),10.00,2026-03-24,31.00
+57,Óleo lubrificante 3 em 1 (frasco),20.00,2026-05-09,12.50
+58,Óleo para compressor (litro),6.00,2024-05-29,48.00
+59,Gás refrigerante R410A (kg),8.00,2025-02-10,145.00
+60,Gás refrigerante R134a (kg),6.00,2025-07-06,98.00
+61,Filtro de ar condicionado split (unidade),12.00,2025-11-20,45.00
+62,Capacitor de partida 35 µF (unidade),8.00,2024-06-27,34.00
+63,Termostato para freezer (unidade),5.00,2025-09-29,112.00
+64,Borracha de vedação para geladeira (metro),10.00,2025-11-12,28.00
+65,Queimador de fogão industrial (unidade),4.00,2024-02-01,185.00
+66,Mangueira de gás com abraçadeiras (metro),15.00,2026-04-19,19.00
+67,Piso de tatame EVA 1 x 1 m (unidade),40.00,2024-08-29,54.00
+68,Rede de nylon para trave de futsal (par),3.00,2024-10-02,260.00
+69,Corda de nylon 8 mm (metro),100.00,2025-05-19,3.80
+70,Tela de aço galvanizada para alambrado (rolo 25 m),4.00,2024-07-25,780.00
+71,Arame galvanizado 12 (kg),10.00,2024-01-23,23.00
+72,Tábua de madeira de lei (metro),40.00,2024-05-02,36.00
+73,Compensado naval 15 mm (chapa),5.00,2026-08-10,310.00
+74,Cimento CP II (saco 50 kg),20.00,2026-09-24,38.00
+75,Argamassa colante AC II (saco 20 kg),15.00,2024-12-29,29.00
+76,Rejunte flexível (kg),12.00,2025-01-20,15.00
+77,Ralo sifonado de aço inox (unidade),6.00,2026-07-05,58.00
+78,Cadeado de latão 40 mm (unidade),15.00,2025-01-25,26.00
+79,Fechadura para armário (unidade),30.00,2024-09-25,18.50
+80,Dobradiça de aço 3 polegadas (par),25.00,2026-05-08,7.90
+81,Rodízio giratório com trava (unidade),20.00,2026-02-24,22.00
+82,Pilha alcalina AA (unidade),100.00,2024-08-26,3.40
+83,Bateria de nobreak 12V 7Ah (unidade),6.00,2026-03-19,95.00
+84,Cartucho/toner para impressora laser (unidade),3.00,2026-05-11,260.00
+85,Pasta térmica para processador (tubo),5.00,2025-03-11,22.00
+86,Detergente desengordurante industrial (galão 5 L),10.00,2024-01-01,45.00
+87,Pano de limpeza multiuso (rolo),20.00,2025-07-06,16.00

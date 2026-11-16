@@ -1,0 +1,21 @@
+idUSUARIO,nome,data_cadastro,cpf,telefone,email,senha,tipo_usuario,SETOR_idSETOR
+1,Yasmin Mamud Marquezini,2025-03-15 17:58:21,158.813.998-03,(19) 99725-9042,yasmin.mamud@accpe.org.br,2YMlcEC2n5dq4s5-Hcg8rw==:LsbEsJeiI3USYmltK9Uk_52jBSm8dIqqE_9njg3aMd0=,administrador,1
+2,Nicolas de Lima,2025-04-14 8:12:32,973.091.141-08,(19) 99668-9032,nicolas.lima@accpe.org.br,egWL5mZ3s-tb9qW9_P98kg==:TbTZXyp0qY_O61deNQSbew9Ys82BML-buZA-gKRR530=,administrador,1
+3,Kaue Rodrigues,2024-12-23 9:37:56,536.455.681-66,(19) 99141-9815,kaue.rodrigues@accpe.org.br,di_SsupMdv5svclQ6cPbXQ==:Fl0sCBhN1h_ovoDX4ohEQ-UNKUP_mxkGFDwJEgfF7HU=,administrador,1
+4,Luciana Aparecida Bortolo,2025-04-26 15:41:10,447.294.055-87,(19) 98185-7533,luciana.bortolo@accpe.org.br,bfgED8OHDq7byeRRo4sp4w==:1TAAMp16OCc06CYQt79NFXGmbCFX6TcO7_VI3ywWaA4=,comum,2
+5,Rodrigo Henrique Tavares,2025-06-30 12:42:30,987.168.976-41,(19) 99729-7880,rodrigo.tavares@accpe.org.br,0QLvVs0H4bVg2cg7PdVabA==:bWkgYZVpC-qcEc9cG0bON-iEsm_3maRi9t6LNLm2evc=,comum,2
+6,José Carlos Menezes,2025-06-28 9:52:02,978.809.320-54,(19) 99469-8035,jose.menezes@accpe.org.br,e5eUecdAmW_JSmJFEV0kEg==:4mib7xhnPuJu6iHre1zC2Vs3akBGcVAbWD7xQ3goFlA=,comum,3
+7,Anderson Luiz Pereira,2025-08-05 15:19:10,727.317.784-90,(19) 99371-6040,anderson.pereira@accpe.org.br,BZYZTpq1BRRiEQe4O0Stcw==:j2zyQMoDz0Or9xI6O2TSUp7RGn4JO9zhIthwhPjm3Fs=,comum,3
+8,Paulo Sérgio Ribeiro,2024-02-12 10:43:40,887.663.440-18,(19) 99342-8507,paulo.ribeiro@accpe.org.br,ssoB7_6_3y2g-QyDJDBvrw==:JPl9cOF9D7LQP5uSmdcfmqpW1DxAutGICynykYX-BOI=,comum,3
+9,Valdir Aparecido Souza,2025-03-29 8:36:43,875.347.787-19,(19) 99702-5752,valdir.souza@accpe.org.br,_SE2KDP8VdSdl17sbEuXzg==:rQCoBdn7jLESMgV6BvOBKbynZVNrVVevEe08-Xecg4w=,comum,3
+10,Thiago Augusto Moraes,2025-05-14 9:10:13,571.784.726-26,(19) 99328-5365,thiago.moraes@accpe.org.br,SmWodlPE-ETnriV0MqSffA==:yJaiB0sfm4sUq0obNHObOiZ46vVEL2wLlvCY31JRVPQ=,comum,4
+11,Camila Rodrigues Nunes,2024-01-10 16:12:51,751.362.701-01,(19) 99189-9955,camila.nunes@accpe.org.br,boLNSxoB9lMXf39HZABiPw==:oqxCGpuFOXoxt5gtuU2ddVAhxqN9HYgSd9NlSREVmL8=,comum,4
+12,Sebastião Gomes da Silva,2025-10-21 14:30:12,193.319.084-15,(19) 98316-1084,sebastiao.silva@accpe.org.br,wSEvb-8Kp6xjPRIYyV17Sw==:eBPDoEC_Y4Ut3wRwvWRAjmGeDgsAsRkinfJKgs-3MX0=,comum,5
+13,Edson Roberto Campos,2024-05-23 17:11:17,599.728.379-80,(19) 98595-2383,edson.campos@accpe.org.br,H71d5w9bzPNMYrmA-N69pQ==:3o5dpBYRKKD66WMoXMZwzITvDGCeikpHXRRWbxuf-ZY=,comum,5
+14,Ricardo Almeida Fonseca,2025-06-25 11:34:50,622.948.662-82,(19) 98770-1231,ricardo.fonseca@accpe.org.br,ocmBTomUkAiAQUxB6V5iIw==:-MNjniPVnK8belh5_dxd1lXbObzyLikHRHmE5uiDAHA=,comum,6
+15,Juliana Martins Prado,2025-05-11 13:58:00,161.055.008-07,(19) 99398-5975,juliana.prado@accpe.org.br,OrmKHSrxLG3TPIWdzOwNqg==:_WatSH04Gn_5y34KonigbdxVAuF4fe7lLridP1XnpAE=,comum,6
+16,Gustavo Henrique Lima,2025-09-06 17:27:33,751.779.922-33,(19) 98423-8104,gustavo.lima@accpe.org.br,XFVunXrEP2tUIiWOqMiFtQ==:nJGRyME3auVU7asEUCXAHqOkX_8F-mJrX_XDNI7NtWE=,comum,7
+17,Adriana Souza Barreto,2024-07-28 11:09:21,957.931.860-34,(19) 98092-9925,adriana.barreto@accpe.org.br,l2QYkQNMTEAXx_LedwREng==:WQR0D16qcWeGu0LRmU7ghqymFgXMMCnR6CJN1t3uIHA=,comum,8
+18,Maria das Graças Oliveira,2024-05-30 10:55:11,073.702.838-60,(19) 99354-4047,maria.oliveira@accpe.org.br,i2sMN4wLE71Q8Jz9lUXqIA==:PRhXSp5__f6uriUJ3zAmGljJk_fBWpQLixMhsPjZeFE=,comum,9
+19,Antônio Carlos Batista,2024-12-27 11:10:48,646.861.642-57,(19) 98539-8600,antonio.batista@accpe.org.br,pAJGum1xTDDHDPG9RYpAiw==:CCtfRah7sUWBrWx6CU8OBVU7KVTgqBifNpMKLLZKt2Q=,comum,10
+20,Cláudia Regina Faria,2024-05-11 17:35:53,764.725.877-01,(19) 99631-9596,claudia.faria@accpe.org.br,5hZIW1FMBxFA8VQ3B4m9Xw==:O2VXvGIJ0YYsJDSH0vdZ-IxeSmg5ui8S4fcTBqHkI_M=,comum,9
