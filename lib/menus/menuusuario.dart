@@ -408,7 +408,7 @@ class MenuUsuario {
     for (final u in lista) {
       final setor = await setorDao.buscarPorId(u.setorId);
       print('${u.id.toString().padRight(6)}'
-          '${u.nome.padRight(21)}'
+          '${_cortar(u.nome, 20).padRight(21)}'
           '${setor?.nome ?? '-'}');
     }
   }
@@ -453,8 +453,12 @@ class MenuUsuario {
   static String _ler(String prompt) {
     if (prompt.isNotEmpty) print(prompt);
     stdout.write('> ');
-    return (stdin.readLineSync() ?? '').trim();
+    return lerLinha();
   }
+
+  // Corta textos longos para não invadir a coluna seguinte das listas
+  static String _cortar(String s, int n) =>
+      s.length <= n ? s : '${s.substring(0, n - 1)}…';
 
   /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.
   static void _cabecalho(String titulo) {

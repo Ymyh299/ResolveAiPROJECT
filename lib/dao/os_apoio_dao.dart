@@ -55,11 +55,11 @@ class OsApoioDao {
   // Cada item já vem formatado para exibição
   Future<List<String>> listarMateriaisUtilizados(int osId) async {
     final r = await Conexao.consultar(
-      '''SELECT m.nome_material, i.quantidade_usada, i.valor_unitario
+      '''SELECT m.nome, i.quantidade_usada, i.valor_unitario
           FROM ORDEMSERVICO_has_MATERIAL i
           JOIN MATERIAL m ON m.idMATERIAL = i.MATERIAL_idMATERIAL
           WHERE i.ORDEMSERVICO_idORDEMSERVICO = :os
-          ORDER BY m.nome_material''',
+          ORDER BY m.nome''',
       {'os': osId},
     );
     return r.map((linha) {
@@ -67,7 +67,7 @@ class OsApoioDao {
       final valor = lerDouble(linha['valor_unitario'])!;
       final qtdTexto =
           qtd == qtd.truncateToDouble() ? qtd.toInt().toString() : qtd.toStringAsFixed(2);
-      return '${linha['nome_material']} — $qtdTexto x R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
+      return '${linha['nome']} — $qtdTexto x R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
     }).toList();
   }
 

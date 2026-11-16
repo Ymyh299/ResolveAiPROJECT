@@ -151,7 +151,7 @@ class OrdemDeServicoMenu {
   String _ler([String prompt = '']) {
     if (prompt.isNotEmpty) print(prompt);
     stdout.write('> ');
-    return stdin.readLineSync()?.trim() ?? '';
+    return lerLinha();
   }
 
   /// Com [pausa] = true espera um ENTER, para a mensagem não sumir

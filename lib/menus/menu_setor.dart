@@ -365,7 +365,7 @@ class MenuSetor {
   static String _ler(String prompt) {
     if (prompt.isNotEmpty) print(prompt);
     stdout.write('> ');
-    return (stdin.readLineSync() ?? '').trim();
+    return lerLinha();
   }
 
   /// Limpa a tela e mostra o título: é isso que separa uma tela da outra.

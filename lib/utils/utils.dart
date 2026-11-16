@@ -17,7 +17,18 @@ void limparTela() {
   }
 }
 
+/// Lê uma linha do teclado. Se a entrada for fechada (Ctrl+D / Ctrl+Z),
+/// encerra o programa: sem isso os laços dos menus ficariam rodando sem parar.
+String lerLinha() {
+  final linha = stdin.readLineSync();
+  if (linha == null) {
+    print('\nEntrada encerrada. Saindo...');
+    exit(0);
+  }
+  return linha.trim();
+}
+
 void pausar([String msg = 'Pressione ENTER para continuar...']) {
   stdout.write('\n$msg');
-  stdin.readLineSync();
+  lerLinha();
 }
