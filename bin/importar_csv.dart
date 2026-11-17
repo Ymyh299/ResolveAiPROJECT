@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:mysql_client/mysql_client.dart';
 import 'package:projeto_resolveai/database/conexao.dart';
 
 class ImportSpec {
@@ -151,8 +152,9 @@ Future<void> main() async {
     return;
   }
 
+  MySQLConnection? conn;
   try {
-    final conn = await Conexao.get();
+    conn = await Conexao.get();
 
     await conn.execute('START TRANSACTION');
     var totalImportado = 0;
@@ -173,7 +175,7 @@ Future<void> main() async {
           throw FileSystemException('Arquivo não encontrado', arquivo.path);
         }
 
-        // Os arquivos enviados estão codificados em Latin-1 (acentos).
+        // Os arquivos estão codificados em UTF-8 (acentos).
         final conteudo = utf8.decode(await arquivo.readAsBytes());
         final linhas = Csv(
           fieldDelimiter: ',',
@@ -256,6 +258,9 @@ Future<void> main() async {
     stderr.writeln('\nFalha na importação: $erro');
     stderr.writeln('Nenhuma alteração da transação foi mantida.');
     exitCode = 1;
+  } finally {
+    // Sem fechar a conexão o programa não termina depois da importação.
+    if (conn != null && conn.connected) await conn.close();
   }
 }
 
